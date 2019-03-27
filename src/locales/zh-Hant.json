@@ -39,6 +39,9 @@
     "startReading": "開始閱讀",
     "empty": "沒有文章"
   },
+  "ERROR": {
+    "LOGIN_NEEDED": "請登入以觀看內容"
+  },
   "LikerType": {
     "general": "一般讚客",
     "civic": "@:civicLiker"
