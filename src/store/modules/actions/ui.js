@@ -7,7 +7,9 @@ export async function setLocale({ commit }, inputLocale) {
   if (!locale || !this.$i18n.locales.some(l => l.code === locale)) {
     locale = this.$i18n.defaultLocale;
   }
-  this.$i18n.setLocale(locale);
+  if (process.client) {
+    this.$i18n.setLocale(locale);
+  }
   commit(types.UI_SET_LOCALE, convertLikeCoLocale(locale));
   await this.$i18n.waitForPendingLocaleChange();
 }

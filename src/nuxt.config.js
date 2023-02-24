@@ -287,8 +287,6 @@ const nuxtConfig = {
     defaultLocale: 'zh-Hant',
     langDir: '~/locales/',
     detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'liker-land-i18n',
       redirectOn: 'root',
     },
   },
@@ -352,6 +350,7 @@ const nuxtConfig = {
   //   maxAge: 86400, // 1 day
   // },
   router: {
+    middleware: 'i18n',
     extendRoutes(routes, resolve) {
       const route = routes.find(r => r.name === 'id');
       const [subscribeRoute] = route.children;
