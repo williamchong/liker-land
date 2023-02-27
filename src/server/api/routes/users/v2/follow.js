@@ -12,6 +12,7 @@ const {
   walletUserCollection,
   nftMintSubscriptionCollection,
 } = require('../../../../modules/firebase');
+const { publisher, PUBSUB_TOPIC_MISC } = require('../../../../modules/pubsub');
 
 const router = Router();
 
@@ -28,17 +29,19 @@ router.get(
         return;
       }
       const { followees: walletFollowees = [], email } = userDoc.data();
-      const snapshot = await nftMintSubscriptionCollection
-        .where('subscriberEmail', '==', email)
-        .get();
-      const legacyFollowees = snapshot.docs.map(doc => {
-        const { subscribedWallet } = doc.data();
-        return subscribedWallet;
-      });
-      const followees = new Set([
-        ...walletFollowees,
-        ...legacyFollowees,
-      ]).values();
+      let legacyFollowees = [];
+      if (email) {
+        const snapshot = await nftMintSubscriptionCollection
+          .where('subscriberEmail', '==', email)
+          .get();
+        legacyFollowees = snapshot.docs.map(doc => {
+          const { subscribedWallet } = doc.data();
+          return subscribedWallet;
+        });
+      }
+      const followees = [
+        ...new Set([...walletFollowees, ...legacyFollowees]).values(),
+      ];
       res.json({ followees });
     } catch (err) {
       handleRestfulError(req, res, next, err);
@@ -73,6 +76,12 @@ router.post(
         await t.update(userRef, {
           followees: FieldValue.arrayUnion(creator),
         });
+      });
+      publisher.publish(PUBSUB_TOPIC_MISC, req, {
+        logType: 'UserCreatorFollow',
+        type: 'wallet',
+        user,
+        creatorWallet: creator,
       });
       res.sendStatus(200);
     } catch (err) {
@@ -118,6 +127,12 @@ router.delete(
         if (snapshot.docs.length > 0) {
           t.delete(snapshot.docs[0].ref);
         }
+      });
+      publisher.publish(PUBSUB_TOPIC_MISC, req, {
+        logType: 'UserCreatorUnfollow',
+        type: 'wallet',
+        user,
+        creatorWallet: creator,
       });
       res.sendStatus(200);
     } catch (err) {

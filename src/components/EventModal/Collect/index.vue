@@ -194,6 +194,31 @@ export default {
       default: false,
     },
   },
+  head() {
+    return {
+      link: [
+        {
+          rel: 'modulepreload',
+          href:
+            'https://unpkg.com/@google/model-viewer@3.0.2/dist/model-viewer.min.js',
+          as: 'script',
+        },
+        {
+          rel: 'prefetch',
+          crossorigin: 'anonymous',
+          href: this.nftModelURL,
+        },
+      ],
+      script: [
+        {
+          type: 'module',
+          src:
+            'https://unpkg.com/@google/model-viewer@3.0.2/dist/model-viewer.min.js',
+          asyc: 'true',
+        },
+      ],
+    };
+  },
   data() {
     return {
       paymentMethod: undefined,
@@ -326,18 +351,22 @@ export default {
       }
     },
     goToNFTDetails() {
-      this.$router.push({
-        name: 'nft-class-classId-nftId',
-        params: { classId: this.classId, nftId: this.justCollectedNFTId },
-      });
+      this.$router.push(
+        this.localeLocation({
+          name: 'nft-class-classId-nftId',
+          params: { classId: this.classId, nftId: this.justCollectedNFTId },
+        })
+      );
       this.uiCloseTxModal();
     },
     goToPortfolio() {
-      this.$router.push({
-        name: 'id',
-        params: { id: this.getAddress },
-        query: { tab: 'collected' },
-      });
+      this.$router.push(
+        this.localeLocation({
+          name: 'id',
+          params: { id: this.getAddress },
+          query: { tab: 'collected' },
+        })
+      );
       this.uiCloseTxModal();
     },
     onClickModelViewer() {

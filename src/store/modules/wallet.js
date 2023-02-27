@@ -18,7 +18,6 @@ import {
   postFollowCreator,
   apiUserV2WalletEmail,
   getNFTEvents,
-  updateEventLastSeen,
 } from '~/util/api';
 import { setLoggerUser } from '~/util/EventLogger';
 
@@ -37,6 +36,7 @@ import {
   WALLET_SET_FOLLOWEES_FETCHING_STATE,
   WALLET_SET_USER_INFO,
   WALLET_SET_IS_LOGGING_IN,
+  WALLET_SET_EVENT_FETCHING,
 } from '../mutation-types';
 
 const WALLET_EVENT_LIMIT = 100;
@@ -57,6 +57,7 @@ const state = () => ({
   methodType: null,
   likeBalance: null,
   likeBalanceFetchPromise: null,
+  isFetchingEvent: false,
 
   // Note: Suggest to rename to sessionAddress
   loginAddress: '',
@@ -80,13 +81,7 @@ const mutations = {
   },
   [WALLET_SET_USER_INFO](state, userInfo) {
     if (userInfo) {
-      const {
-        user,
-        email,
-        emailUnconfirmed,
-        followees,
-        eventLastSeenTs,
-      } = userInfo;
+      const { user, email, emailUnconfirmed, eventLastSeenTs } = userInfo;
       if (user !== undefined) {
         state.loginAddress = user;
       }
@@ -96,9 +91,6 @@ const mutations = {
       if (emailUnconfirmed !== undefined) {
         state.emailUnverified = emailUnconfirmed;
       }
-      if (Array.isArray(followees)) {
-        state.followees = followees;
-      }
       if (eventLastSeenTs) {
         state.eventLastSeenTs = eventLastSeenTs;
       }
@@ -106,7 +98,6 @@ const mutations = {
       state.loginAddress = '';
       state.email = '';
       state.emailUnverified = '';
-      state.followees = [];
       state.eventLastSeenTs = -1;
     }
   },
@@ -137,6 +128,9 @@ const mutations = {
   [WALLET_SET_FOLLOWEES_FETCHING_STATE](state, isFetching) {
     state.isFetchingFollowees = isFetching;
   },
+  [WALLET_SET_EVENT_FETCHING](state, isFetching) {
+    state.isFetchingEvent = isFetching;
+  },
 };
 
 const getters = {
@@ -150,6 +144,7 @@ const getters = {
   getLikerInfo: state => state.likerInfo,
   walletFollowees: state => state.followees,
   walletIsFetchingFollowees: state => state.isFetchingFollowees,
+  getIsFetchingEvent: state => state.isFetchingEvent,
   getEvents: state => state.events.slice(0, WALLET_EVENT_LIMIT),
   getLatestEventTimestamp: state =>
     state.events[0]?.timestamp &&
@@ -290,6 +285,10 @@ const actions = {
 
   async fetchWalletEvents({ state, commit, dispatch }) {
     const { address } = state;
+    if (!address) {
+      return;
+    }
+    commit(WALLET_SET_EVENT_FETCHING, true);
     const [senderRes, receiverRes, purchaseRes] = await Promise.all([
       this.$api.$get(
         getNFTEvents({
@@ -378,11 +377,11 @@ const actions = {
         .sort((a, b) => b.timestamp - a.timestamp)
     );
     classIds.map(id => dispatch('lazyGetNFTClassMetadata', id));
+    commit(WALLET_SET_EVENT_FETCHING, false);
   },
 
-  async updateEventLastSeenTs({ commit }) {
-    await this.$api.$post(updateEventLastSeen());
-    commit(WALLET_SET_EVENT_LAST_SEEN_TS, Date.now());
+  updateEventLastSeenTs({ commit }, timestamp) {
+    commit(WALLET_SET_EVENT_LAST_SEEN_TS, timestamp);
   },
 
   async walletFetchLIKEBalance({ commit, state }) {
@@ -406,18 +405,17 @@ const actions = {
   },
   async walletFetchSessionUserInfo({ commit, dispatch }, address) {
     try {
-      commit(WALLET_SET_FOLLOWEES_FETCHING_STATE, true);
       const userInfo = await this.$api.$get(getUserV2Self());
       commit(WALLET_SET_USER_INFO, userInfo || { user: address });
       await dispatch('setLocale', userInfo.locale);
       return userInfo;
     } catch (error) {
       throw error;
-    } finally {
-      commit(WALLET_SET_FOLLOWEES_FETCHING_STATE, false);
     }
   },
   async signLogin({ state, commit, dispatch }) {
+    // Do not trigger login if the window is not focused
+    if (document.hidden) return;
     if (!state.signer) {
       await dispatch('initIfNecessary');
     }
@@ -506,7 +504,6 @@ const actions = {
       throw error;
     }
   },
-  // Since we can get followees from user info, we don't need to fetch followees separately
   async walletFetchFollowees({ state, commit, dispatch }, address) {
     try {
       if (state.isFetchingFollowees) return;
