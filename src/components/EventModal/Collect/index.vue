@@ -308,6 +308,7 @@ export default {
 
       // Mixin
       this.nftPriceInUSD = undefined;
+      this.nftPriceInUSDisListingInfo = undefined;
       this.userCollectedCount = undefined;
       this.fetchNFTPrices(this.classId);
       this.fetchUserCollectedCount();
