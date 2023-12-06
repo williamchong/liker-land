@@ -220,13 +220,15 @@
             @click="handleClickRetry"
           />
         </div>
-        <div class="flex items-center justify-center gap-[4px] mt-[18px]">
+        <div
+          v-if="canViewContentDirectly"
+          class="flex items-center justify-center gap-[4px] mt-[18px]"
+        >
           <Label
             class="text-medium-gray text-[12px]"
             :text="$t('nft_claim_claimed_download')"
           />
           <NFTViewOptionList
-            v-if="canViewContentDirectly"
             :url="externalUrl"
             :class-id="classId"
             :content-urls="iscnContentUrls"
