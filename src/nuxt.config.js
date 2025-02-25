@@ -552,9 +552,13 @@ const nuxtConfig = {
       ],
     },
     transpile: [
+      'abitype',
       'gsap',
       'cosmjs-type',
+      'viem',
+      'ox',
       '@cosmjs',
+      '@noble/curves',
       '@likecoin/iscn-js',
       '@likecoin/wallet-connector',
       '@walletconnect',
