@@ -552,6 +552,7 @@ import navigationListenerMixin from '~/mixins/navigation-listener';
 import utmMixin from '~/mixins/utm';
 import alertMixin from '~/mixins/alert';
 import couponMixin from '~/mixins/coupon';
+import { isEVMClassId } from '~/util/evm/nft';
 
 export default {
   name: 'NFTClassDetailsPage',
@@ -606,7 +607,10 @@ export default {
       return;
     }
     // check classId contains only valid characters
-    if (!/^likenft1[ac-hj-np-z02-9]{58}$/.test(classId)) {
+    if (
+      !/^likenft1[ac-hj-np-z02-9]{58}$/.test(classId) &&
+      !isEVMClassId(classId)
+    ) {
       error({
         statusCode: 400,
         message: 'INVALID_NFT_CLASS_ID',
