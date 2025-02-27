@@ -719,7 +719,7 @@ export default {
         isbn: this.contentMetadata.isbn,
         datePublished:
           this.contentMetadata.datePublished ||
-          this.contentMetadata?.recordTimestamp,
+          this.contentMetadata.recordTimestamp,
         url: `${EXTERNAL_HOST}${this.$route.path}`,
         offers: {
           '@context': 'http://www.schema.org',

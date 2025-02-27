@@ -475,7 +475,7 @@ export default {
       return this.nftCollectorCollectedNFTList.length || 0;
     },
     nftCreatorMessage() {
-      return this.NFTClassMetadata?.message || '';
+      return this.contentMetadata?.message || '';
     },
     nftCreatorMessageWithParsing() {
       const collector =
