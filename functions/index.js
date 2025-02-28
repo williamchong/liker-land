@@ -10,10 +10,6 @@ if (!currentFunction || currentFunction === 'api') {
   exports.api = require('./api');
 }
 
-if (!currentFunction || currentFunction === 'backup') {
-  exports.backup = require('./backup');
-}
-
 if (!currentFunction || currentFunction === 'pubsub') {
   exports.pubsub = require('./pubsub');
 }
