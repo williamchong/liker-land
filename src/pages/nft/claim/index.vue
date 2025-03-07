@@ -1259,6 +1259,12 @@ export default {
         this.nftId = data.nftId;
         if (this.nftId || data.allItemsAutoClaimed) {
           this.isAutoDeliver = true;
+        } else if (
+          data.newClaimedNFTs &&
+          !data.newClaimedNFTs.length &&
+          data.errors?.length
+        ) {
+          throw new Error(data.errors[0].error);
         }
         this.navigateToState(NFT_CLAIM_STATE.CLAIMED);
         logTrackerEvent(
