@@ -910,7 +910,12 @@ const actions = {
         )
         .concat(
           classIds.map(classId =>
-            dispatch('fetchNFTBookInfoByClassId', classId).catch()
+            dispatch('fetchNFTBookInfoByClassId', classId).catch(error => {
+              if (error.response?.status !== 404) {
+                // eslint-disable-next-line no-console
+                console.error(error);
+              }
+            })
           )
         )
     );
