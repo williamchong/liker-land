@@ -14,6 +14,23 @@
           <template #column-left>
             <ButtonV2
               preset="outline"
+              :class="[
+                'w-full',
+                '!h-[32px]',
+                '!rounded-[10px]',
+                'border-[#EBEBEB]',
+              ]"
+              size="tiny"
+              @click="handleShareButtonClick"
+            >
+              <IconShare class="w-[16px] text-dark-gray" />
+              <p
+                class="ml-[8px] text-[12px] text-dark-gray"
+                v-text="$t('nft_details_page_button_share')"
+              />
+            </ButtonV2>
+            <ButtonV2
+              preset="outline"
               class="w-full !h-[32px] !rounded-[10px] border-[#EBEBEB]"
               size="tiny"
               :is-disabled="isAllSoldOut"
@@ -600,6 +617,18 @@ export default {
       );
       await this.handleCollectFromEdition(giftInfo);
       this.isGiftDialogOpen = false;
+    },
+    handleShareButtonClick() {
+      this.shareURLPath({
+        title: this.collectionName,
+        text: this.collectionDescription,
+        path: this.nftCollectionDetailsPagePath,
+        alertMessage: this.$t('tooltip_share_done'),
+      });
+      logTrackerEvent(this, 'NFT', 'share', this.collectionId, 1, {
+        content_type: 'collection',
+        item_id: this.collectionId,
+      });
     },
     handleGiftButtonClick() {
       this.isGiftDialogOpen = true;

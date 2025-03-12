@@ -15,6 +15,7 @@ export default {
       'getAddress',
       'getSigner',
       'getLikerInfo',
+      'getLikerId',
       'getLocale',
       'getUserInfoByAddress',
       'walletTotalSales',

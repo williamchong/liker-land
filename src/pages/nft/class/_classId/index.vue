@@ -122,6 +122,23 @@
                     '!h-[32px]',
                     '!rounded-[10px]',
                     'border-[#EBEBEB]',
+                  ]"
+                  size="tiny"
+                  @click="handleShareButtonClick"
+                >
+                  <IconShare class="w-[16px] text-dark-gray" />
+                  <p
+                    class="ml-[8px] text-[12px] text-dark-gray"
+                    v-text="$t('nft_details_page_button_share')"
+                  />
+                </ButtonV2>
+                <ButtonV2
+                  preset="outline"
+                  :class="[
+                    'w-full',
+                    '!h-[32px]',
+                    '!rounded-[10px]',
+                    'border-[#EBEBEB]',
                     { 'opacity-50': isGiftingDisabled },
                   ]"
                   size="tiny"
@@ -1642,6 +1659,18 @@ export default {
       await this.handleCollectFromEdition(selectedValue, giftInfo);
       this.isGiftDialogOpen = false;
     },
+    handleShareButtonClick() {
+      this.shareURLPath({
+        title: this.nftName,
+        text: this.nftDescription,
+        path: this.nftClassDetailsPagePath,
+        alertMessage: this.$t('tooltip_share_done'),
+      });
+      logTrackerEvent(this, 'NFT', 'share', this.classId, 1, {
+        content_type: 'nft',
+        item_id: `${this.classId}-${this.editionPriceIndex}`,
+      });
+    },
     handleGiftButtonClick() {
       this.isGiftDialogOpen = true;
       logTrackerEvent(
@@ -1704,15 +1733,6 @@ export default {
     },
     handleInputCustomPrice(price) {
       this.customPrice = Number(price);
-    },
-    handleCopyURL() {
-      this.shareURLPath({
-        title: this.nftName,
-        text: this.nftDescription,
-        path: this.nftClassDetailsPageURL,
-        alertMessage: this.$t('tooltip_share_done'),
-      });
-      logTrackerEvent(this, 'NFT', 'CopyShareURL(Details)', this.classId, 1);
     },
     async handleFollowButtonClick() {
       await this.handleClickFollow({
