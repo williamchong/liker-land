@@ -14,6 +14,7 @@ export default {
   mixins: [creatorInfoMixin, walletMixin],
   computed: {
     ...mapGetters([
+      'getLikerId',
       'getUserInfoByAddress',
       'getNFTClassMetadataById',
       'getISCNMetadataById',
@@ -111,6 +112,11 @@ export default {
       return this.collectionPrice !== undefined
         ? formatNumberWithUSD(this.collectionPrice)
         : '-';
+    },
+    nftCollectionDetailsPagePath() {
+      return `/nft/collection/${this.collectionId}?from=${this.getLikerId ||
+        this.getAddress ||
+        ''}`;
     },
   },
   methods: {
