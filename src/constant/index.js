@@ -475,6 +475,17 @@ export const NFT_BOOK_PRODUCT_PAGE_OVERRIDE = IS_TESTNET
               'likenft154xhw0qyds5pgvsyc7379lnkyvwqkvv2zvmmh2gn5qrewljeqwys2sju6x',
             ],
       },
+      likenft17sgwqc2t5rwfz70wp0xrh3av7knse7v6qh8ystf324rz3ny4w5hq2u6avh: {
+        recommendedClassIds: [
+          'likenft1k4tulfcxn2vre3y4crd5hmf7gpf2fwcqrdrx85tcscwvyr6cv9pqt9469l',
+          'likenft1dpegnjnklnh5g66nn06gz64wv0ec6k04f4v5lx69qlv6xlh493eqdq454j',
+          'likenft1aa48m08ep06m2celycx9qdsyl0vaqje2jlzdnufe64czevg2ed3syk9g6v',
+          'likenft1ekvx3en9l0640kv9fd5n5hvltwyfl443ymyu2cnhmalvjfy0cdcqqa3l6h',
+          'likenft154xhw0qyds5pgvsyc7379lnkyvwqkvv2zvmmh2gn5qrewljeqwys2sju6x',
+          'likenft1q257f2jtn6sv893jq3tr28yxymhr4zygzqkwvd68z2nfm8zklnusfyv58m',
+          'likenft1ku0gmdq6pm8vgq68fvnr7dl0vxs4j2yv0c0qlvadj5k39fdfzgsqycdllx',
+        ],
+      },
     };
 
 export const SIGN_AUTHORIZATION_PERMISSIONS = [
