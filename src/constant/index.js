@@ -445,8 +445,21 @@ export const NFT_BOOK_WITH_SIGN_IMAGE_SET = new Map(
           'likenft1ekvx3en9l0640kv9fd5n5hvltwyfl443ymyu2cnhmalvjfy0cdcqqa3l6h',
           ['陳健民'],
         ],
+        ['likenft17zq3r5t2qwfatle04sz680vl3ka0l8wfeu4n5jv26mnvawnfqs4qd773ny'],
         ['likenft1mppyvyuvvft62yc66saee28q8nyl6xuh8vg332d8y9fn6gz9qtssj4trzl'],
         ['likenft1tlnn2x6864q6l5ag4fd87lc8eel7xafxnahd0836sap9eqshtuesesavum'],
+        ['likenft1u4zg33l90j7vu3h0drjf57yc265lrajrqpvjsqarmjdqg4r4juts99tlwh'],
+        ['likenft1tzfv42hps95fs8g60w22dm08uh6qag64de3z8vpfqjeay3sk6ylqryma0y'],
+        ['likenft1p6hwvytqx53c2gzmpxswt56u6h6vw460d27je5tk49jvlcfplkxq3hnpdz'],
+        ['likenft1hesnt4kv7hqjkg8m3tu7vxfxcfkxmwtz49z2s8dtz7389utg70vqp7ac9q'],
+        ['likenft1ak9e8e08haqst8sc3lqawk30hxeqgfyxrsjy4gygajqmq2hh9xzquge3cg'],
+        ['likenft189r40vmjud2vgqy70qxe30cr89rzg4epa6075u0wexrwu7rzk0eq3p2th0'],
+        ['likenft184l7uz0cud540kc7lnghdvan7649marxste4hmruq44f8c8zuw9shuknyk'],
+        ['likenft17sgwqc2t5rwfz70wp0xrh3av7knse7v6qh8ystf324rz3ny4w5hq2u6avh'],
+        ['likenft150ndt6fffg2c0an7rdds2tfcpq4lqd6m7tr450lml8es57w752as26t75v'],
+        ['likenft1lt5n46ykdjxga2aqvgtzer66z9wqgeszg74jf826ktlej2u2dndsmmqujt'],
+        ['likenft16jguhkfa6nnu224fwjke2zv5f99n8wl9m097h46zqxnyu33j7rgs7f0xg3'],
+        ['likenft1qqqezqjuxfkrsykex6r2cdtakpkndg2wnnlsx894gmwq4p84868se52g6z'],
       ]
 );
 
