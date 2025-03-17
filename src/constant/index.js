@@ -495,7 +495,7 @@ export const NFT_BOOK_PRODUCT_PAGE_OVERRIDE = IS_TESTNET
           'likenft1aa48m08ep06m2celycx9qdsyl0vaqje2jlzdnufe64czevg2ed3syk9g6v',
           'likenft1ekvx3en9l0640kv9fd5n5hvltwyfl443ymyu2cnhmalvjfy0cdcqqa3l6h',
           'likenft154xhw0qyds5pgvsyc7379lnkyvwqkvv2zvmmh2gn5qrewljeqwys2sju6x',
-          'likenft1q257f2jtn6sv893jq3tr28yxymhr4zygzqkwvd68z2nfm8zklnusfyv58m',
+          'likenft10w7w9gn8g5cy47wmwjzpl8nf4tnfe5rjxqyg5am5m6zpfufwuszqdjympl',
           'likenft1ku0gmdq6pm8vgq68fvnr7dl0vxs4j2yv0c0qlvadj5k39fdfzgsqycdllx',
         ],
       },
