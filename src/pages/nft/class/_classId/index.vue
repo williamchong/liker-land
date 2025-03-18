@@ -1662,7 +1662,6 @@ export default {
     handleShareButtonClick() {
       this.shareURLPath({
         title: this.nftName,
-        text: this.nftDescription,
         path: this.nftClassDetailsPageSharePath,
         alertMessage: this.$t('tooltip_share_done'),
       });
