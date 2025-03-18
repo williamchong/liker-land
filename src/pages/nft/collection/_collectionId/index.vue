@@ -621,7 +621,6 @@ export default {
     handleShareButtonClick() {
       this.shareURLPath({
         title: this.collectionName,
-        text: this.collectionDescription,
         path: this.nftCollectionDetailsPageSharePath,
         alertMessage: this.$t('tooltip_share_done'),
       });
