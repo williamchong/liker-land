@@ -673,7 +673,7 @@ export default {
       'lazyGetUserInfoByAddresses',
       'fetchCreatedNFTClassesByAddress',
       'fetchCollectedNFTClassesByAddress',
-      'fetchNFTDisplayStateListByAddress',
+      'lazyFetchNFTDisplayStateListByAddress',
       'fetchNFTBookInfoByClassId',
       'lazyFetchNFTBookInfoByClassId',
       'fetchNFTCollectionInfoByClassId',
@@ -855,10 +855,10 @@ export default {
       await this.updateUserCollectedCount(this.classId, this.getAddress);
     },
     async fetchIscnOwnerNFTDisplayStateList() {
-      await this.fetchNFTDisplayStateListByAddress(this.classOwner);
+      await this.lazyFetchNFTDisplayStateListByAddress(this.classOwner);
     },
     async fetchUserNFTDisplayStateList() {
-      await this.fetchNFTDisplayStateListByAddress(this.getAddress);
+      await this.lazyFetchNFTDisplayStateListByAddress(this.getAddress);
     },
     async collectNFT() {
       if (!this.nftIsCollectable) {
