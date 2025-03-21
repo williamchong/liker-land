@@ -431,6 +431,7 @@ export default {
     } finally {
       this.isLoading = false;
     }
+    this.fetchCollectionOwnerDisplayState();
     const { hash } = this.$route;
     if (hash) {
       this.$nextTick(() => {

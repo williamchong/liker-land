@@ -128,6 +128,7 @@ export default {
     ...mapActions([
       'lazyGetUserInfoByAddress',
       'lazyFetchNFTCollectionInfoByCollectionId',
+      'fetchNFTDisplayStateListByAddress',
     ]),
     async lazyFetchNFTCollectionInfo() {
       await catchAxiosError(
@@ -135,6 +136,9 @@ export default {
           collectionId: this.collectionId,
         })
       );
+    },
+    async fetchCollectionOwnerDisplayState() {
+      await this.fetchNFTDisplayStateListByAddress(this.collectionOwner);
     },
   },
 };
