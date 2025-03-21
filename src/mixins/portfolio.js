@@ -487,7 +487,6 @@ export const createPortfolioMixin = ({
     ...mapActions([
       'lazyFetchCollectedNFTClassesByAddress',
       'lazyFetchCreatedNFTClassesByAddress',
-      'fetchNFTDisplayStateListByAddress',
       'lazyGetUserInfoByAddress',
     ]),
     setupPortfolioGrid() {

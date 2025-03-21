@@ -413,7 +413,7 @@ export default {
     this.syncRouteForTab();
     this.syncRouteForTypeFilter(NFT_TYPE_FILTER_OPTIONS.NFT_BOOK);
     this.loadNFTClassesForCurrentTabByAddress(this.wallet);
-    this.fetchNFTDisplayStateListByAddress(this.wallet);
+    this.lazyFetchNFTDisplayStateListByAddress(this.wallet);
     this.loadTopUserListByAddress(this.wallet);
     this.lazyFetchCreatedNFTClassesByAddress(this.wallet);
   },
@@ -421,7 +421,7 @@ export default {
     ...mapActions([
       'addNFTClassesToShoppingCart',
       'clearShoppingCart',
-      'fetchNFTDisplayStateListByAddress',
+      'lazyFetchNFTDisplayStateListByAddress',
     ]),
     handleTopUserHover(i) {
       const type = this.isCurrentTabCollected ? 'creator' : 'collector';

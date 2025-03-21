@@ -835,6 +835,11 @@ const actions = {
       hiddenClassIdSet: new Set(data.hidden),
     });
   },
+  async lazyFetchNFTDisplayStateListByAddress({ state, dispatch }, address) {
+    if (!state.userNFTClassDisplayStateSetsMap[address]) {
+      await dispatch('fetchNFTDisplayStateListByAddress', address);
+    }
+  },
   async setNFTDisplayState(
     { state, commit },
     { displayState, address, classId }

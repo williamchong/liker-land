@@ -211,13 +211,13 @@ export default {
     ...mapActions([
       'addNFTClassesToShoppingCart',
       'clearShoppingCart',
-      'fetchNFTDisplayStateListByAddress',
+      'lazyFetchNFTDisplayStateListByAddress',
     ]),
     fetchData() {
       if (!this.wallet) return;
 
       this.loadNFTClassesForCurrentTabByAddress(this.wallet);
-      this.fetchNFTDisplayStateListByAddress(this.wallet);
+      this.lazyFetchNFTDisplayStateListByAddress(this.wallet);
       this.loadTopUserListByAddress(this.wallet);
       this.lazyFetchCreatedNFTClassesByAddress(this.wallet);
     },
