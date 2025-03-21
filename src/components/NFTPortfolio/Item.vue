@@ -98,7 +98,7 @@ export default {
     },
     detailsPageRoute() {
       const query = { ...this.$route.query };
-      if (!query.ll_medium && this.llMedium) {
+      if (this.llMedium) {
         query.ll_medium = this.llMedium;
       }
       if (this.nftIdForDetails) {

@@ -19,9 +19,8 @@ export default {
   computed: {
     mixinLinkMedium() {
       return (
-        this.$route.query.ll_medium ||
         // NOTE: To be injected by the mixin user
-        this.linkMedium
+        this.linkMedium || this.$route.query.ll_medium
       );
     },
     googleOrganicId() {
