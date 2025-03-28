@@ -22,7 +22,7 @@ import {
   getNFTBookPurchaseLink,
 } from '~/util/api';
 import { logTrackerEvent, logPurchaseFlowEvent } from '~/util/EventLogger';
-import { sleep, catchAxiosError } from '~/util/misc';
+import { sleep, catchAxiosError, getContentUrlType } from '~/util/misc';
 import {
   NFT_INDEXER_LIMIT_MAX,
   signTransferNFT,
@@ -35,7 +35,7 @@ import {
   populateGrantEvent,
   getUniqueAddressesFromEvent,
 } from '~/util/nft';
-import { getDynamicCovers } from '~/util/nft-book';
+import { getDynamicCovers, getFilenameFromURL } from '~/util/nft-book';
 import { formatNumberWithLIKE, formatNumberWithUSD } from '~/util/ui';
 
 import walletMixin from '~/mixins/wallet';
@@ -220,6 +220,44 @@ export default {
     },
     classContentUrls() {
       return this.contentMetadata.sameAs || [];
+    },
+    classReadActionTargets() {
+      const { potentialAction } = this.contentMetadata;
+      if (!potentialAction) return [];
+      let targets = [];
+      if (Array.isArray(potentialAction)) {
+        const readAction = potentialAction.find(
+          action => action.name === 'ReadAction'
+        );
+        if (!readAction) return [];
+        ({ targets } = readAction);
+      } else {
+        const readAction = potentialAction.ReadAction;
+        if (!readAction) return [];
+        ({ targets } = readAction);
+      }
+      return targets.map(target => {
+        const { contentType, url, name } = target;
+        return {
+          url: parseNFTMetadataURL(url),
+          name,
+          type: getContentUrlType(contentType),
+        };
+      });
+    },
+    normalizedClassContentURLs() {
+      if (this.classReadActionTargets?.length) {
+        return this.classReadActionTargets;
+      }
+      return this.classContentUrls.map(url => ({
+        url: parseNFTMetadataURL(url),
+        name: getFilenameFromURL(url),
+        type: getContentUrlType(url),
+      }));
+    },
+    classContentTypes() {
+      const types = this.normalizedClassContentURLs.map(({ type }) => type);
+      return [...new Set(types.filter(type => type !== 'unknown'))];
     },
     classContentFingerprints() {
       return this.contentMetadata.contentFingerprints || [];
