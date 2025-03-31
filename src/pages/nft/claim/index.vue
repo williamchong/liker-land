@@ -600,7 +600,8 @@ import crossSellMixin from '~/mixins/cross-sell';
 import walletMixin from '~/mixins/wallet';
 import nftOrCollectionMixin from '~/mixins/nft-or-collection';
 import walletLoginMixin from '~/mixins/wallet-login';
-import { sleep } from '~/util/misc';
+import { getContentUrlType, sleep } from '~/util/misc';
+import { getFilenameFromURL } from '~/util/nft-book';
 
 const NFT_CLAIM_STATE = {
   WELCOME: 'WELCOME',
@@ -766,19 +767,40 @@ export default {
       );
     },
     formatDownloadLinks() {
-      return this.classIds?.map(id => ({
-        canViewNFTBookBeforeClaim: this.getCanViewNFTBookBeforeClaimByClassId(
-          id
-        ),
-        externalUrl:
-          this.getIscnData(id)?.contentMetadata.url ||
-          this.getNFTClassMetadataById(id)?.external_url,
-        id,
-        contentUrls: this.getIscnData(id)?.contentMetadata.sameAs,
-        isNftBook: this.checkNftIsNFTBook(id),
-        isContentViewable: true,
-        isDownloadable: !this.getIsHideNFTBookDownload(id),
-      }));
+      return this.classIds?.map(id => {
+        const contentMetadata = this.getIscnData(id)?.contentMetadata;
+        const { sameAs = [], potentialAction } = contentMetadata || {};
+        const formattedPotentialReadTargets = potentialAction.ReadAction
+          ? potentialAction.ReadAction.target.map(target => {
+              const { contentType, url, name } = target;
+              return {
+                url: parseNFTMetadataURL(url),
+                name,
+                type: getContentUrlType(contentType),
+              };
+            })
+          : [];
+        const formattedContentUrls = formattedPotentialReadTargets?.length
+          ? formattedPotentialReadTargets
+          : sameAs.map(url => ({
+              url: parseNFTMetadataURL(url),
+              name: getFilenameFromURL(url),
+              type: getContentUrlType(url),
+            }));
+        return {
+          canViewNFTBookBeforeClaim: this.getCanViewNFTBookBeforeClaimByClassId(
+            id
+          ),
+          externalUrl:
+            contentMetadata?.url ||
+            this.getNFTClassMetadataById(id)?.external_url,
+          id,
+          contentUrls: contentMetadata.sameAs,
+          isNftBook: this.checkNftIsNFTBook(id),
+          isContentViewable: true,
+          isDownloadable: !this.getIsHideNFTBookDownload(id),
+        };
+      });
     },
     shouldDisplayDownloadOptions() {
       return (
