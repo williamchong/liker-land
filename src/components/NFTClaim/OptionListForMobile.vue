@@ -84,7 +84,8 @@ export default {
     close() {
       this.$emit('close');
     },
-    getContentUrlButtonText({ type }) {
+    getContentUrlButtonText(url) {
+      const type = getContentUrlType(url);
       switch (type) {
         case 'epub':
           return this.$t('nft_details_page_button_view_epub');
