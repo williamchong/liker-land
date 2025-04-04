@@ -15,9 +15,8 @@ export default {
       'initIfNecessary',
       'restoreSession',
       'signLogin',
-      'openAuthcoreModal',
     ]),
-    async connectWallet({ isOpenAuthcore = false, isSignUp = false } = {}) {
+    async connectWallet() {
       try {
         logTrackerEvent(
           this,
@@ -27,50 +26,48 @@ export default {
           1
         );
         setSessionStorageItem('USER_POST_AUTH_ROUTE', this.$route.fullPath);
-        const connection = isOpenAuthcore
-          ? await this.openAuthcoreModal({ isSignUp })
-          : await this.openConnectWalletModal({
-              language: this.$i18n.locale.split('-')[0],
-              connectWalletTitle: this.$t('connect_wallet_title'),
-              connectWalletMobileWarning: this.$t(
-                'connect_wallet_mobile_warning'
-              ),
-              shouldRecommendConnectionMethod: true,
-              shouldShowLegacyAuthcoreOptions: !!this.$route.query
-                .authcore_legacy,
-              onEvent: this.handleConnectWalletEvent,
-            });
-        if (!connection) return false;
-        const { method } = connection;
-        logTrackerEvent(
-          this,
-          'user',
-          `connected_wallet_${method}`,
-          'connected_wallet',
-          1
-        );
-
-        const res = await this.initWalletAndLogin(connection);
-
-        if (res) {
-          logTrackerEvent(
-            this,
-            'user',
-            `connect_wallet_done_with_login`,
-            'connect_wallet_done',
-            1
-          );
-          if (this.$route.name.startsWith('index') && !res.isNew) {
-            this.$router.push(this.localeLocation({ name: 'bookshelf' }));
+        if (this.getAddress) {
+          const res = await this.initWalletAndLogin();
+          if (res) {
+            logTrackerEvent(
+              this,
+              'user',
+              `connect_wallet_done_with_login`,
+              'connect_wallet_done',
+              1
+            );
+            if (this.$route.name.startsWith('index') && !res.isNew) {
+              this.$router.push(this.localeLocation({ name: 'bookshelf' }));
+            }
           }
+        } else {
+          await this.openConnectWalletModal(async () => {
+            logTrackerEvent(
+              this,
+              'user',
+              `connected_wallet_${this.walletMethodType}`,
+              'connected_wallet',
+              1
+            );
+            const res = await this.initWalletAndLogin();
+            if (res) {
+              logTrackerEvent(
+                this,
+                'user',
+                `connect_wallet_done_with_login`,
+                'connect_wallet_done',
+                1
+              );
+              if (this.$route.name.startsWith('index') && !res.isNew) {
+                this.$router.push(this.localeLocation({ name: 'bookshelf' }));
+              }
+            }
+          });
         }
-
-        return res;
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);
         this.alertPromptError(err);
-        return false;
       }
     },
     handleConnectWalletEvent({ type, ...payload }) {

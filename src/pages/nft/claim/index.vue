@@ -1385,10 +1385,7 @@ export default {
       try {
         this.isLoginLoading = true;
         if (!this.claimingAddress) {
-          const isConnected = await this.connectWallet({
-            isOpenAuthcore: true,
-            isSignUp: true,
-          });
+          const isConnected = await this.connectWallet();
           if (isConnected || this.loginAddress) {
             this.navigateToState(NFT_CLAIM_STATE.ID_CONFIRMATION);
           }
