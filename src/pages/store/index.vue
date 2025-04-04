@@ -227,7 +227,7 @@
               v-if="shouldShowBooxBanner"
               :class="['row-start-4', 'sm:row-start-3', 'col-span-full']"
             >
-              <ListingPageBooxBanner />
+              <ListingPageBooxBanner @click.native="handleBooxBannerClick" />
             </li>
 
             <li v-for="item in sortedBookstoreItems" :key="item.id">
@@ -1227,6 +1227,9 @@ export default {
     },
     handleClickHomePage() {
       logTrackerEvent(this, 'listing', 'listing_home_page_click', '', 1);
+    },
+    handleBooxBannerClick() {
+      logTrackerEvent(this, 'listing', 'listing_boox_banner_click', '', 1);
     },
     async fetchSearchItems(query) {
       this.isSearching = true;
