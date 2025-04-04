@@ -17,8 +17,8 @@
   "repository": "github:likecoin/liker-land",
   "scripts": {
     "dev": "cross-env NODE_ENV=development IS_TESTNET=TRUE nodemon server/index.js --watch server",
-    "build": "nuxt build",
-    "start": "cross-env NODE_ENV=production node server/index.js",
+    "build": "IS_TESTNET=TRUE nuxt build",
+    "start": "cross-env NODE_ENV=production IS_TESTNET=TRUE node server/index.js",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue .",
     "lint:fix": "eslint --ext .js,.vue --fix .",
@@ -59,6 +59,7 @@
     "dayjs": "^1.11.9",
     "dompurify": "^3.2.4",
     "epubjs": "^0.3.93",
+    "ethers": "^6.13.5",
     "express": "^4.21.0",
     "express-session": "^1.17.0",
     "fast-json-stable-stringify": "^2.1.0",
