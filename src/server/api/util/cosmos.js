@@ -2,10 +2,14 @@
 const bech32 = require('bech32');
 const createHash = require('create-hash');
 const secp256k1 = require('secp256k1');
+const { ethers } = require('ethers');
 
 const FIVE_MIN_IN_MS = 300000;
 
 function isValidAddress(address) {
+  if (address.startsWith('0x')) {
+    return ethers.isAddress(address);
+  }
   try {
     const { prefix } = bech32.decode(address);
     return ['cosmos', 'like'].includes(prefix);
@@ -58,6 +62,10 @@ function parseActualLoginPayload(message, signMethod) {
         payload = Buffer.from(base64Payload, 'base64').toString('utf8');
         break;
       }
+      case 'personal_sign': {
+        payload = message;
+        break;
+      }
       default:
         payload = parsedMessage.memo;
     }
@@ -94,8 +102,38 @@ function checkCosmosSignPayload({
   return actualPayload;
 }
 
+function checkEvmSignPayload({
+  signature,
+  message,
+  inputWallet,
+  signMethod = 'personal_sign',
+  action = '',
+}) {
+  const recovered = ethers.verifyMessage(message, signature);
+  if (recovered.toLowerCase() !== inputWallet.toLowerCase()) {
+    throw new Error('RECOVEREED_ADDRESS_NOT_MATCH');
+  }
+  const actualPayload = parseActualLoginPayload(message, signMethod);
+  const {
+    action: payloadAction,
+    evmWallet: payloadEvmWallet,
+    ts,
+  } = actualPayload;
+  if (action && action !== payloadAction) {
+    throw new Error('PAYLOAD_ACTION_NOT_MATCH');
+  }
+  if (payloadEvmWallet !== inputWallet) {
+    throw new Error('PAYLOAD_WALLET_NOT_MATCH');
+  }
+  if (Math.abs(ts - Date.now()) > FIVE_MIN_IN_MS) {
+    throw new Error('PAYLOAD_EXPIRED');
+  }
+  return actualPayload;
+}
+
 module.exports = {
   isValidAddress,
   isValidFollowee,
   checkCosmosSignPayload,
+  checkEvmSignPayload,
 };

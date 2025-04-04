@@ -14,6 +14,7 @@ const {
 const {
   isValidAddress,
   checkCosmosSignPayload,
+  checkEvmSignPayload,
 } = require('../../../util/cosmos');
 const { getCrispUserHash, upsertCrispProfile } = require('../../../util/crisp');
 
@@ -76,7 +77,7 @@ router.post('/login', async (req, res, next) => {
     cart,
   } = req.body;
   try {
-    if (!inputWallet || !signature || !publicKey || !message) {
+    if (!inputWallet || !signature || !message) {
       res.sendStatus(400);
       return;
     }
@@ -86,13 +87,23 @@ router.post('/login', async (req, res, next) => {
     }
 
     try {
-      checkCosmosSignPayload({
-        signature,
-        publicKey,
-        message,
-        inputWallet,
-        signMethod,
-      });
+      if (inputWallet.startsWith('like')) {
+        checkCosmosSignPayload({
+          signature,
+          publicKey,
+          message,
+          inputWallet,
+          signMethod,
+        });
+      } else if (inputWallet.startsWith('0x')) {
+        checkEvmSignPayload({
+          signature,
+          publicKey,
+          message,
+          inputWallet,
+          signMethod,
+        });
+      }
     } catch (err) {
       res.status(401).send(err.message);
       return;
