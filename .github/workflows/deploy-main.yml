@@ -21,6 +21,8 @@ jobs:
           cache-dependency-path: |
             src/package-lock.json
             functions/package-lock.json
+      - name: Install latest node-gyp
+        run: npm install -g node-gyp
       - name: Dependencies
         run: npm --prefix src install && npm --prefix functions install && cp -r src/nuxt.config.js src/config src/tailwind.config.js functions/
       - uses: w9jds/setup-firebase@main
