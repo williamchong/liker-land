@@ -44,6 +44,7 @@ import {
 } from '~/util/EventLogger';
 
 import {
+  WALLET_SET_CONNECT_CALLBACK,
   WALLET_SET_IS_DEBUG,
   WALLET_SET_ADDRESS,
   WALLET_SET_SIGNER,
@@ -83,6 +84,7 @@ const state = () => ({
   isDebug: false,
   address: '',
   isConnectingWallet: false,
+  onConnectCallback: null,
   signer: null,
   connector: null,
   likerInfo: null,
@@ -118,6 +120,9 @@ const state = () => ({
 });
 
 const mutations = {
+  [WALLET_SET_CONNECT_CALLBACK](state, callback) {
+    state.connectCallback = callback;
+  },
   [WALLET_SET_IS_DEBUG](state, isDebug) {
     state.isDebug = isDebug;
   },
@@ -320,29 +325,16 @@ function formatEventType(e, loginAddress) {
 }
 
 const actions = {
-  async getLikeCoinWalletLib() {
-    if (!likecoinWalletLib) {
-      likecoinWalletLib = await import(/* webpackChunkName: "likecoin_wallet" */ '@likecoin/wallet-connector');
-    }
-    return likecoinWalletLib;
-  },
-
-  async initWallet({ commit, dispatch }, { method, accounts, offlineSigner }) {
-    if (!accounts[0]) return false;
+  async initWallet({ commit, dispatch }) {
     commit(WALLET_SET_IS_CONNECTING_WALLET, true);
     const connector = await dispatch('getConnector');
+    const walletAddress = await connector.getWalletAddress();
+    const signer = await connector.getSigner();
     // Listen once per account
-    connector.once('account_change', async currentMethod => {
-      const connection = await connector.init(currentMethod);
-      dispatch('walletLogout');
-      await dispatch('initWallet', connection);
-    });
-    commit(WALLET_SET_METHOD_TYPE, method);
+    commit(WALLET_SET_METHOD_TYPE, connector.providerId);
     commit(WALLET_SET_LIKERINFO, null);
-    const { address, bech32Address } = accounts[0];
-    const walletAddress = bech32Address || address;
     commit(WALLET_SET_ADDRESS, walletAddress);
-    commit(WALLET_SET_SIGNER, offlineSigner);
+    commit(WALLET_SET_SIGNER, signer);
     commit(WALLET_SET_IS_CONNECTING_WALLET, false);
     catchAxiosError(
       this.$api.$get(getUserInfoMinByAddress(walletAddress)).then(userInfo => {
@@ -352,8 +344,8 @@ const actions = {
     return true;
   },
 
-  async initWalletAndLogin({ dispatch, getters }, connection) {
-    const isInited = await dispatch('initWallet', connection);
+  async initWalletAndLogin({ dispatch, getters }) {
+    const isInited = await dispatch('initWallet');
     if (!isInited) return null;
 
     try {
@@ -384,73 +376,30 @@ const actions = {
     if (state.connector) {
       return state.connector;
     }
-    const lib = await dispatch('getLikeCoinWalletLib');
-    const connector = new lib.LikeCoinWalletConnector({
+    if (!likecoinWalletLib) {
+      likecoinWalletLib = await import(/* webpackChunkName: "likecoin_wallet" */ '@likecoin/evm-wallet-connector');
+    }
+    const connector = new likecoinWalletLib.LikeCoinEVMWalletConnector({
       ...LIKECOIN_WALLET_CONNECTOR_CONFIG,
+      onConnect: address => {
+        dispatch('onConnectCallback', { address });
+      },
     });
     commit(WALLET_SET_CONNECTOR, connector);
     return connector;
   },
 
-  async handleConnectorRedirect({ dispatch }, { method, params }) {
-    const connector = await dispatch('getConnector');
-    const connection = await connector.handleRedirect(method, params);
-    if (connection) {
-      const res = await dispatch('initWalletAndLogin', connection);
-      return { isNew: res.isNew, ...connection };
+  async onConnectCallback({ state }, { address }) {
+    if (state.connectCallback) {
+      await state.connectCallback(address);
     }
-    return null;
   },
 
-  async openConnectWalletModal(
-    { commit, dispatch },
-    {
-      language,
-      connectWalletTitle,
-      connectWalletMobileWarning,
-      shouldRecommendConnectionMethod = false,
-      shouldShowLegacyAuthcoreOptions = false,
-      onEvent,
-    } = {}
-  ) {
+  async openConnectWalletModal({ commit, dispatch }, callback) {
     commit(WALLET_SET_IS_CONNECTING_WALLET, true);
     const connector = await dispatch('getConnector');
-    if (shouldRecommendConnectionMethod) {
-      connector.options.availableMethods = [
-        ['liker-id', { tier: 1, isRecommended: true }],
-        'keplr',
-        'keplr-mobile',
-        'cosmostation',
-        'cosmostation-mobile',
-        'likerland-app',
-        'leap',
-        'metamask-leap',
-        'walletconnect-v2',
-      ];
-    }
-    if (shouldShowLegacyAuthcoreOptions) {
-      connector.options.authcoreClientId = 'likecoin-app';
-    }
-    const connection = await connector.openConnectionMethodSelectionDialog({
-      language,
-      connectWalletTitle,
-      connectWalletMobileWarning,
-      onEvent,
-    });
-    commit(WALLET_SET_IS_CONNECTING_WALLET, false);
-    return connection;
-  },
-
-  async openAuthcoreModal({ state, commit, dispatch }, { isSignUp = false }) {
-    const initialScreen = isSignUp ? 'register' : 'signin';
-    commit(WALLET_SET_IS_CONNECTING_WALLET, true);
-    const connector = await dispatch('getConnector');
-    const connection = await connector.init(
-      'liker-id',
-      undefined, // params
-      undefined, // language
-      initialScreen
-    );
+    const connection = connector.showConnectPortal();
+    commit(WALLET_SET_CONNECT_CALLBACK, callback);
     commit(WALLET_SET_IS_CONNECTING_WALLET, false);
     return connection;
   },
@@ -467,40 +416,15 @@ const actions = {
     await dispatch('walletLogout');
   },
 
-  async restoreSession({ dispatch, getters }) {
-    // HACK: check for localStorage session before init-ing wallet connector lib
-    // wallet connector lib is a huge js
-    let hasSession = false;
-    try {
-      if (window.localStorage) {
-        hasSession = !!window.localStorage.getItem(
-          'likecoin_wallet_connector_session'
-        );
-      }
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(err);
-    }
-    if (!hasSession) return;
-    const connector = await dispatch('getConnector');
-    const session = connector.restoreSession();
-    if (session) {
-      const { accounts, method } = session;
-      await dispatch('initWallet', { accounts, method });
-      if (getters.walletIsMatchedSession) {
-        await Promise.all([
-          setLoggerUser(this, { wallet: getters.loginAddress, method }),
-          dispatch('walletFetchSessionUserData'),
-        ]);
-      }
-    }
+  restoreSession({ dispatch, getters }) {
+    // no op
   },
 
   async initIfNecessary({ dispatch }) {
     const connector = await dispatch('getConnector');
-    const connection = await connector.initIfNecessary();
-    if (connection) {
-      await dispatch('initWalletAndLogin', connection);
+    const wallet = await connector.getWalletAddress();
+    if (wallet) {
+      dispatch('initWalletAndLogin');
     }
   },
 
@@ -876,8 +800,6 @@ const actions = {
     await Promise.all(promises);
   },
   async signLogin({ state, commit, dispatch, getters }) {
-    // Do not trigger login if the window is not focused
-    if (state.methodType !== 'liker-id' && document.hidden) return null;
     if (!state.signer) {
       await dispatch('initIfNecessary');
     }
