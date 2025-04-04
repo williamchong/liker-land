@@ -143,6 +143,7 @@
     "eslint-plugin-prettier": "2.6.2",
     "eslint-plugin-vue": "^7.20.0",
     "extract-css-chunks-webpack-plugin": "^4.8.0",
+    "node-gyp": "^11.2.0",
     "node-sass": "^8.0.0",
     "nodemon": "^1.18.9",
     "prettier": "1.16.0",
