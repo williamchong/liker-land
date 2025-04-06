@@ -78,10 +78,13 @@ export default {
     fileName() {
       if (Array.isArray(this.normalizedClassContentURLs)) {
         const matchingUrl = this.normalizedClassContentURLs[this.index];
+        if (!matchingUrl) {
+          return undefined;
+        }
         if (this.type && matchingUrl.type !== this.type) {
           return undefined;
         }
-        return matchingUrl.name;
+        return matchingUrl.name || 'content';
       }
       return undefined;
     },
