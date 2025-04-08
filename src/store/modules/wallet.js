@@ -398,10 +398,10 @@ const actions = {
   async openConnectWalletModal({ commit, dispatch }, callback) {
     commit(WALLET_SET_IS_CONNECTING_WALLET, true);
     const connector = await dispatch('getConnector');
-    const connection = connector.showConnectPortal();
+    // mitigate new connector cannot showConnectPortal on init
+    setImmediate(() => connector.showConnectPortal());
     commit(WALLET_SET_CONNECT_CALLBACK, callback);
     commit(WALLET_SET_IS_CONNECTING_WALLET, false);
-    return connection;
   },
 
   async disconnectWallet({ state, commit, dispatch }) {
