@@ -1,5 +1,9 @@
 const { Router } = require('express');
-const { db, walletUserCollection } = require('../../../../modules/firebase');
+const {
+  db,
+  FieldValue,
+  walletUserCollection,
+} = require('../../../../modules/firebase');
 const { GET_WALLET_API_SECRET } = require('../../../../config/config');
 
 const router = Router();
@@ -97,7 +101,12 @@ router.post('/wallet/evm/migrate', async (req, res, next) => {
         const likeWallet = userDoc.id;
         t.update(walletUserCollection.doc(wallet), {
           evmWallet,
+          migrateTimestamp: FieldValue.serverTimestamp(),
+        });
+        t.create(walletUserCollection.doc(evmWallet), {
+          ...userData,
           likeWallet,
+          migrateTimestamp: FieldValue.serverTimestamp(),
         });
         return {
           id: likeWallet,
