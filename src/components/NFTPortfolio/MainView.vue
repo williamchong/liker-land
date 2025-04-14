@@ -205,6 +205,7 @@
           :text="$t('nft_recommendation_title')"
         />
         <NFTPageRecommendation
+          :override-class-ids="portfolioRecommendedClassIdsOverride"
           @item-click="handleRecommendedItemClick"
           @item-collect="handleRecommendedItemCollect"
           @slide-next.once="handleRecommendationSlideNext"
@@ -236,6 +237,7 @@ import MagicGrid from 'magic-grid';
 import { logTrackerEvent } from '~/util/EventLogger';
 import { NFT_CLASS_LIST_SORTING, NFT_TYPE_FILTER_OPTIONS } from '~/util/nft';
 import { ellipsis } from '~/util/ui';
+import { PORTFOLIO_PAGE_RECOMMEND_OVERRIDE } from '~/constant';
 
 import { tabOptions } from '~/mixins/portfolio';
 
@@ -440,6 +442,11 @@ export default {
     },
     portfolioItemsSortingLabel() {
       return this.getPortfolioItemsSortingLabel(this.portfolioItemsSorting);
+    },
+
+    portfolioRecommendedClassIdsOverride() {
+      if (this.isBookshelf) return undefined;
+      return PORTFOLIO_PAGE_RECOMMEND_OVERRIDE[this.portfolioWallet];
     },
 
     // Tab bar
