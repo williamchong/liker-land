@@ -459,6 +459,37 @@ export const NFT_BOOK_PRODUCT_PAGE_OVERRIDE = IS_TESTNET
       },
     };
 
+export const PORTFOLIO_PAGE_RECOMMEND_OVERRIDE = IS_TESTNET
+  ? {}
+  : {
+      // oasistrek
+      like1ve88e2znhr5pgf49ev43aqfz7y7yhferrpe9qr: [
+        'likenft1lnp07hyzvgekvcchf0vz9xsa30qp00e3fp70z5x7vzz7dvas83as8d9h0n',
+        'likenft1aa48m08ep06m2celycx9qdsyl0vaqje2jlzdnufe64czevg2ed3syk9g6v',
+        'likenft1s9he8030mnuwz53988dk2gf0u4eehmthgg6tsr64gx6kamv2z5wsv80qq4',
+        'likenft17sgwqc2t5rwfz70wp0xrh3av7knse7v6qh8ystf324rz3ny4w5hq2u6avh',
+        'likenft1e88egsmedlsjvtp50ngvftf3psn4u4njrlfhkcsmukpuemkwq4tqrqzejk',
+        'likenft1tlnn2x6864q6l5ag4fd87lc8eel7xafxnahd0836sap9eqshtuesesavum',
+        'likenft1ewmnn8fwkd7qk7c7h3me4xgkatjae4yx32nmwp7qkznc9plz8vfqpjvsjv',
+        'likenft19xpypk5hjjqd2c7h8xhmhhue22gzp48yljcz8e6dzmsnqd0r85jqc0ty2c',
+        'likenft1753jcmp7l86dsc0rnza7ltrd7r9vsjspz0rr3g38k2uhhd0f0wusx3a9c8',
+      ],
+      // collective
+      like1n4dyylqufkfrv2cuma8n40mm5s5vusur8dhyjm: [
+        'likenft154xhw0qyds5pgvsyc7379lnkyvwqkvv2zvmmh2gn5qrewljeqwys2sju6x',
+        'likenft1ekvx3en9l0640kv9fd5n5hvltwyfl443ymyu2cnhmalvjfy0cdcqqa3l6h',
+        'likenft1mppyvyuvvft62yc66saee28q8nyl6xuh8vg332d8y9fn6gz9qtssj4trzl',
+        'likenft19hvxv9vyxwlulqnk54qu3y6nq4nwva0jdgvz8hgvtnfaw7wsnpdqpgxz7v',
+        'likenft1j3k6celx0t7dfu0s8e9zlgsrdh4pxtts5qsrrk2fk2c37rqt4wkq0rmush',
+        'likenft1aa48m08ep06m2celycx9qdsyl0vaqje2jlzdnufe64czevg2ed3syk9g6v',
+        'likenft16cns9jk7cathhpe62v6jpyxam6z8ltdk3jw08xpmkrz53s3cknxqulpd0u',
+        'likenft1wrskn9a683stkje3wdmcwuvpuqrp5eevjsnn9y4f55wlystzxausuhj3em',
+        'likenft1d3lkwpmqdmdcw4mm7zevprudwrlrny2mxd8xuv7m5z2073leq75qj70hr5',
+        'likenft1tlnn2x6864q6l5ag4fd87lc8eel7xafxnahd0836sap9eqshtuesesavum',
+        'likenft17zq3r5t2qwfatle04sz680vl3ka0l8wfeu4n5jv26mnvawnfqs4qd773ny',
+      ],
+    };
+
 export const SIGN_AUTHORIZATION_PERMISSIONS = [
   'profile',
   'read:nftbook',
