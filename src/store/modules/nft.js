@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import { BigNumber } from 'bignumber.js';
 import * as api from '@/util/api';
+import * as cosmosApi from '@/util/api/cosmos';
 import {
   NFT_CLASS_LIST_SORTING,
   NFT_CLASS_LIST_SORTING_ORDER,
@@ -448,7 +449,7 @@ const actions = {
       /* HACK: Use restful API instead of cosmjs to avoid loading libsodium,
         which is huge and affects index page performance */
       // const res = await getISCNRecord(iscnId);
-      const req = this.$axios.$get(api.getISCNRecord(iscnId));
+      const req = this.$axios.$get(cosmosApi.getISCNRecord(iscnId));
       commit(TYPES.NFT_SET_ISCN_METADATA, { iscnId, data: req });
       const res = await req;
       const [{ data } = {}] = res.records || [];
@@ -575,7 +576,7 @@ const actions = {
       which is huge and affects index page performance */
     // const chainMetadata = await getClassInfo(classId);
     const { class: chainMetadata } = await this.$api.$get(
-      api.getChainNFTClassMetadataEndpoint(classId)
+      cosmosApi.getChainNFTClassMetadataEndpoint(classId)
     );
     const { data, ...info } = chainMetadata;
     const classData = { ...data, ...info };
@@ -669,7 +670,7 @@ const actions = {
   async fetchNFTMetadata({ commit }, { classId, nftId }) {
     let metadata;
     const { nft: chainMetadata } = await this.$api.$get(
-      api.getChainNFTMetadataEndpoint(classId, nftId)
+      cosmosApi.getChainNFTMetadataEndpoint(classId, nftId)
     );
     const { uri, data: { metadata: nftMetadata = {} } = {} } =
       chainMetadata || {};
@@ -699,7 +700,9 @@ const actions = {
     return info;
   },
   async fetchNFTOwners({ commit }, { classId, nocache = false }) {
-    const { owners } = await this.$api.$get(api.getNFTOwners(classId, nocache));
+    const { owners } = await this.$api.$get(
+      cosmosApi.getNFTOwners(classId, nocache)
+    );
     const info = formatOwnerInfoFromChain(owners);
     commit(TYPES.NFT_SET_NFT_CLASS_OWNER_INFO, { classId, info });
     return info;
@@ -714,7 +717,7 @@ const actions = {
   async fetchCreatedNFTClassesByAddress({ commit, dispatch }, address) {
     // fetch first page only
     let promise = this.$api.$get(
-      api.getNFTClassesPartial({
+      cosmosApi.getNFTClassesPartial({
         classOwner: address,
         reverse: true,
       })
@@ -765,7 +768,7 @@ const actions = {
   ) {
     // fetch first page only
     let promise = this.$api.$get(
-      api.getNFTClassesPartial({
+      cosmosApi.getNFTClassesPartial({
         nftOwner: address,
         nocache,
         reverse: true,
@@ -970,12 +973,12 @@ const actions = {
     const trendingDayString = trendingDate.toISOString().split('T')[0];
     const [trendingRes, freeRes, latestRes] = await Promise.all([
       this.$axios.$get(
-        api.getTopNFTClasses({
+        cosmosApi.getTopNFTClasses({
           after: new Date(trendingDayString).getTime() / 1000,
         })
       ),
       this.$axios.$get(api.getFreeNFTClassIds()),
-      this.$axios.$get(api.getNFTClassesPartial({ reverse: true })),
+      this.$axios.$get(cosmosApi.getNFTClassesPartial({ reverse: true })),
     ]);
     const [trendingClasses, latestClasses] = [trendingRes, latestRes].map(res =>
       (res.classes || []).filter(

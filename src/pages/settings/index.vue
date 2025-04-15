@@ -267,7 +267,7 @@ import alertMixin from '~/mixins/alert';
 import inAppMixin from '~/mixins/in-app';
 
 import GlobeIcon from '~/assets/icons/globe.svg?inline';
-import { getCollectorTopRankedCreators } from '~/util/api';
+import { getCollectorTopRankedCreators } from '~/util/api/cosmos';
 import { fisherShuffle } from '~/util/misc';
 import { logTrackerEvent } from '~/util/EventLogger';
 
