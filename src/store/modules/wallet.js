@@ -26,13 +26,15 @@ import {
   postUserV2WalletEmail,
   putUserV2WalletEmail,
   getUserNotificationSettingsUrl,
+} from '~/util/api';
+import {
   getNFTEvents,
   getNFTClassesPartial,
   getTotalSalesByAddress,
   getTotalRoyaltyByAddress,
   getTotalResalesByAddress,
   getAccountBalance,
-} from '~/util/api';
+} from '~/util/api/cosmos';
 import { checkIsLikeCoinAppInAppBrowser } from '~/util/client';
 import {
   setLoggerUser,

@@ -159,7 +159,7 @@
 <script>
 import { formatNumber } from '~/util/ui';
 import { TimeAgo } from 'vue2-timeago';
-import { getChainExplorerTx } from '~/util/api';
+import { getChainExplorerTx } from '~/util/api/cosmos';
 
 export default {
   name: 'EventListTable',
