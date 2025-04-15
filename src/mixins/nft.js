@@ -17,10 +17,10 @@ import {
   getNFTModel,
   postNewStripeFiatPayment,
   getIdenticonAvatar,
-  getNFTCountByClassId,
   getNftBookBuyerMessage,
   getNFTBookPurchaseLink,
 } from '~/util/api';
+import { getNFTCountByClassId } from '~/util/api/cosmos';
 import { logTrackerEvent, logPurchaseFlowEvent } from '~/util/EventLogger';
 import { sleep, catchAxiosError, getContentUrlType } from '~/util/misc';
 import {

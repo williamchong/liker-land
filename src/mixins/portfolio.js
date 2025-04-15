@@ -7,11 +7,8 @@ import {
   checkIsWritingNFT,
   checkIsNFTBook,
 } from '~/util/nft';
-import {
-  getTopCollectorOfUser,
-  getTopCreatorOfUser,
-  getIdenticonAvatar,
-} from '~/util/api';
+import { getIdenticonAvatar } from '~/util/api';
+import { getTopCollectorOfUser, getTopCreatorOfUser } from '~/util/api/cosmos';
 
 import clipboardMixin from '~/mixins/clipboard';
 import userInfoMixin from '~/mixins/user-info';

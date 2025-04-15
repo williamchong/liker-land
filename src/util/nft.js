@@ -2,6 +2,7 @@
 import { BigNumber } from 'bignumber.js';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import * as api from '@/util/api';
+import * as cosmosApi from '@/util/api/cosmos';
 import {
   ARWEAVE_ENDPOINT,
   IPFS_VIEW_GATEWAY_URL,
@@ -325,7 +326,7 @@ export const fetchAllNFTClassFromChain = async (
   };
   const classes = await queryAllDataFromChain(
     axios,
-    api.getNFTClassesPartial,
+    cosmosApi.getNFTClassesPartial,
     'classes',
     params
   );
@@ -348,7 +349,7 @@ export async function getFormattedNFTEvents({
   do {
     // eslint-disable-next-line no-await-in-loop
     ({ data } = await axios.get(
-      api.getNFTEvents({
+      cosmosApi.getNFTEvents({
         classId,
         nftId,
         key: nextKey,
