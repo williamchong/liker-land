@@ -307,6 +307,8 @@ const nuxtConfig = {
           'https://likecoin.github.io',
           'https://likecoin-integration-test.authcore.io',
           'https://assets.mailerlite.com/',
+
+          'auth.magic.link',
         ],
         'connect-src': [
           "'self'",

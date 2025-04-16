@@ -14,8 +14,8 @@ const IS_TESTNET = process.env.IS_TESTNET;
 export const LIKECOIN_WALLET_CONNECTOR_CONFIG = {
   magicLinkAPIKey: 'pk_live_5E14E3184484268D',
   rpcURL: IS_TESTNET
-    ? 'https://optimism-sepolia-rpc.publicnode.com'
-    : 'https://optimism-rpc.publicnode.com',
+    ? 'https://sepolia.optimism.io'
+    : 'https://mainnet.optimism.io',
   chainId: IS_TESTNET ? 11155420 : 10,
 };
 
