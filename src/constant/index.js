@@ -58,6 +58,10 @@ export const CIVIC_LIKER_V3_STAKING_ENDPOINT = IS_TESTNET
   ? 'https://likecoin-public-testnet-5.netlify.app/validators'
   : 'https://dao.like.co/validators';
 
+export const EVM_CHAIN_VIEW_TX = IS_TESTNET
+  ? 'https://optimism-sepolia.blockscout.com/tx'
+  : 'https://optimistic.etherscan.io/tx';
+
 export const LIKECOIN_CHAIN_VIEW_TX = IS_TESTNET
   ? 'https://node.testnet.like.co/cosmos/tx/v1beta1/txs'
   : 'https://ping.pub/likecoin/tx';
@@ -73,6 +77,10 @@ export const LIKECOIN_CHAIN_NFT_RPC = IS_TESTNET
 export const APP_LIKE_CO_VIEW = IS_TESTNET
   ? 'https://app.rinkeby.like.co/view'
   : 'https://app.like.co/view';
+
+export const LIKE_NFT_EVM_INDEXER_API = IS_TESTNET
+  ? 'https://likenft-indexer.pandawork.com/api'
+  : 'https://likenft-indexer.pandawork.com/api';
 
 export const ARWEAVE_ENDPOINT = 'https://gateway.irys.xyz';
 export const IPFS_VIEW_GATEWAY_URL = 'https://w3s.link/ipfs';

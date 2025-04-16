@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import * as api from '@/util/api';
 import * as cosmosApi from '@/util/api/cosmos';
+import * as evmApi from '@/util/api/evm';
 import {
   NFT_CLASS_LIST_SORTING,
   NFT_CLASS_LIST_SORTING_ORDER,
@@ -20,6 +21,7 @@ import {
 import {
   isEVMClassId,
   getNFTClassDataById as getEvmNFTClassDataById,
+  getNFTDataByTokenId as getEvmNFTDataByTokenId,
 } from '~/util/evm/nft';
 import * as TYPES from '../mutation-types';
 
@@ -683,6 +685,11 @@ const actions = {
   },
   async fetchNFTMetadata({ commit }, { classId, nftId }) {
     let metadata;
+    if (isEVMClassId(classId)) {
+      const metadata = await getEvmNFTDataByTokenId(classId, nftId);
+      commit(TYPES.NFT_SET_NFT_METADATA, { classId, nftId, metadata });
+      return metadata;
+    }
     const { nft: chainMetadata } = await this.$api.$get(
       cosmosApi.getChainNFTMetadataEndpoint(classId, nftId)
     );
@@ -729,6 +736,31 @@ const actions = {
     return owners;
   },
   async fetchCreatedNFTClassesByAddress({ commit, dispatch }, address) {
+    if (isEVMClassId(address)) {
+      // TODO: fetch all pages
+      const res = await this.$api.$get(
+        evmApi.getWalletOwnedClass({
+          wallet: address,
+          reverse: true,
+        })
+      );
+      commit(TYPES.NFT_SET_USER_CREATED_CLASSES_MAP, {
+        address,
+        classesOrPromise: res.data.map(data => ({
+          classId: data.address,
+          createdAt: Date.parse(data.minted_at),
+          type: 'nft_book',
+        })),
+      });
+
+      res.data.forEach(c => {
+        dispatch('parseAndStoreNFTClassMetadata', {
+          classId: c.address,
+          classData: c,
+        });
+      });
+      return;
+    }
     // fetch first page only
     let promise = this.$api.$get(
       cosmosApi.getNFTClassesPartial({
@@ -780,6 +812,31 @@ const actions = {
     { commit, dispatch },
     { address, nocache = false }
   ) {
+    if (isEVMClassId(address)) {
+      // TODO: fetch all pages
+      const res = await this.$api.$get(
+        evmApi.getWalletOwnedNFTs({
+          wallet: address,
+          reverse: true,
+        })
+      );
+      commit(TYPES.NFT_SET_USER_COLLECTED_CLASSES_MAP, {
+        address,
+        classesOrPromise: res.data.map(data => ({
+          classId: data.contract_address,
+          createdAt: Date.parse(data.minted_at),
+          type: 'nft_book',
+        })),
+      });
+
+      res.data.forEach(c => {
+        dispatch('parseAndStoreNFTClassMetadata', {
+          classId: c.address,
+          classData: c,
+        });
+      });
+      return;
+    }
     // fetch first page only
     let promise = this.$api.$get(
       cosmosApi.getNFTClassesPartial({
@@ -848,12 +905,12 @@ const actions = {
     }
   },
   async fetchNFTDisplayStateListByAddress({ commit }, address) {
-    const { data } = await this.$api.get(api.getUserV2DisplayState(address));
-    commit(TYPES.NFT_SET_USER_NFT_CLASS_DISPLAY_STATE_SETS_MAP, {
-      address,
-      featuredClassIdSet: new Set(data.featured),
-      hiddenClassIdSet: new Set(data.hidden),
-    });
+    // const { data } = await this.$api.get(api.getUserV2DisplayState(address));
+    // commit(TYPES.NFT_SET_USER_NFT_CLASS_DISPLAY_STATE_SETS_MAP, {
+    //   address,
+    //   featuredClassIdSet: new Set(data.featured),
+    //   hiddenClassIdSet: new Set(data.hidden),
+    // });
   },
   async lazyFetchNFTDisplayStateListByAddress({ state, dispatch }, address) {
     if (!state.userNFTClassDisplayStateSetsMap[address]) {
