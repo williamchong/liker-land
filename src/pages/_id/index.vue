@@ -218,8 +218,8 @@ export default {
     const { id: originalId } = route.params;
     const { query, hash } = route;
     let id = originalId;
-    if (id && isValidAddress(id)) {
-      if (id.startsWith('like1')) {
+    if (id && (isValidAddress(id) || id.startsWith('0x'))) {
+      if (id.startsWith('like1') || id.startsWith('0x')) {
         try {
           await store.dispatch('fetchUserInfoByAddress', id);
         } catch (error) {
