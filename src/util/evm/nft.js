@@ -36,6 +36,19 @@ export async function getNFTClassDataById(classId) {
   return JSON.parse(dataString.replace('data:application/json;utf8,', ''));
 }
 
+export async function getNFTDataByTokenId(classId, tokenId) {
+  const dataString = await readContract({
+    address: classId,
+    abi: LIKE_NFT_CLASS_ABI,
+    functionName: 'tokenURI',
+    args: [tokenId],
+  });
+  if (!dataString?.startsWith('data:application/json')) {
+    throw new Error('Invalid data');
+  }
+  return JSON.parse(dataString.replace('data:application/json;utf8,', ''));
+}
+
 export async function getNFTClassBalanceOf(classId, wallet) {
   const balance = await readContract({
     address: classId,
