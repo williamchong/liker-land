@@ -2,7 +2,7 @@ import { readContract } from './client';
 import { LIKE_NFT_CLASS_ABI } from './LikeNFT';
 
 export function isEVMClassId(classId) {
-  return classId.startsWith('0x');
+  return classId?.startsWith('0x');
 }
 
 export async function getNFTClassOwner(classId) {
