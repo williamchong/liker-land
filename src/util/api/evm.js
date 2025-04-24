@@ -33,7 +33,7 @@ export const getNFTClassEvents = ({ classId, page, limit = 100 }) => {
   const payload = {};
   if (page) payload.page = page;
   if (limit) payload.limit = limit;
-  return `${LIKE_NFT_EVM_INDEXER_API}/events/${classId}/${querystring.stringify(
+  return `${LIKE_NFT_EVM_INDEXER_API}/events/${classId}?${querystring.stringify(
     payload
   )}`;
 };

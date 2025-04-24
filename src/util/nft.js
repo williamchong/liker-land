@@ -3,13 +3,16 @@ import { BigNumber } from 'bignumber.js';
 import { TxRaw } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import * as api from '@/util/api';
 import * as cosmosApi from '@/util/api/cosmos';
+import * as evmApi from '@/util/api/evm';
 import {
   ARWEAVE_ENDPOINT,
   IPFS_VIEW_GATEWAY_URL,
   LIKECOIN_CHAIN_NFT_RPC,
   LIKECOIN_CHAIN_MIN_DENOM,
   LIKECOIN_NFT_API_WALLET,
+  LIKECOIN_EVM_NFT_API_WALLET,
 } from '../constant';
+import { isEVMClassId } from './evm/nft';
 
 let queryClient = null;
 let iscnLib = null;
@@ -231,7 +234,7 @@ export function formatEventMemo(event) {
   return parseAutoMemo(memo, event.msg_index || 0);
 }
 
-export function formatNFTEvent(event) {
+export function formatCosmosNFTEvent(event) {
   const {
     class_id: classId,
     nft_id: nftId,
@@ -266,6 +269,42 @@ export function formatNFTEvent(event) {
     txHash,
     memo,
     price: price ? new BigNumber(price).shiftedBy(-9).toFixed(0) : null,
+    timestamp: Date.parse(timestamp),
+  };
+}
+
+export function formatEvmNFTEvent(event) {
+  const {
+    address: classId,
+    transaction_hash: txHash,
+    decoded: {
+      name: action,
+      indexed_params: { from: fromWallet, to: toWallet, nftId },
+      non_indexed_params: { memo: eventMemo },
+    },
+    block_timestamp: timestamp,
+  } = event;
+  const memo = formatEventMemo({ memo: eventMemo });
+  let eventName;
+  switch (action) {
+    case 'TransferWithMemo':
+    case 'Transfer':
+      eventName =
+        fromWallet === LIKECOIN_EVM_NFT_API_WALLET ? 'purchase' : 'transfer';
+      break;
+    default:
+      eventName = action;
+      break;
+  }
+  return {
+    event: eventName,
+    classId,
+    nftId,
+    fromWallet,
+    toWallet,
+    txHash,
+    memo,
+    price: null,
     timestamp: Date.parse(timestamp),
   };
 }
@@ -340,30 +379,48 @@ export async function getFormattedNFTEvents({
   key = null,
   actionType,
   ignoreToList,
-  getAll = false,
 }) {
-  let data;
   let nextKey = key;
-  let count;
   const events = [];
-  do {
-    // eslint-disable-next-line no-await-in-loop
-    ({ data } = await axios.get(
-      cosmosApi.getNFTEvents({
-        classId,
-        nftId,
-        key: nextKey,
-        limit: NFT_INDEXER_LIMIT_MAX,
-        actionType,
-        ignoreToList,
-        reverse: true,
-      })
-    ));
-    nextKey = data.pagination.next_key;
-    ({ count } = data.pagination);
-    events.push(...data.events.map(formatNFTEvent));
-    // eslint-disable-next-line no-unmodified-loop-condition
-  } while (count === NFT_INDEXER_LIMIT_MAX && getAll);
+  if (isEVMClassId(classId)) {
+    let data;
+    do {
+      // eslint-disable-next-line no-await-in-loop
+      ({ data } = await axios.get(
+        evmApi.getNFTClassEvents({
+          classId,
+          page: nextKey,
+        })
+      ));
+      nextKey = data.meta.page + 1;
+      events.push(
+        ...data.data
+          .map(formatEvmNFTEvent)
+          .filter(e => !nftId || e.nftId === nftId)
+      );
+    } while (nextKey === data.meta.total_pages);
+  } else {
+    let data;
+    let count;
+    do {
+      // eslint-disable-next-line no-await-in-loop
+      ({ data } = await axios.get(
+        cosmosApi.getNFTEvents({
+          classId,
+          nftId,
+          key: nextKey,
+          limit: NFT_INDEXER_LIMIT_MAX,
+          actionType,
+          ignoreToList,
+          reverse: true,
+        })
+      ));
+      nextKey = data.pagination.next_key;
+      ({ count } = data.pagination);
+      events.push(...data.events.map(formatCosmosNFTEvent));
+      // eslint-disable-next-line no-unmodified-loop-condition
+    } while (count === NFT_INDEXER_LIMIT_MAX);
+  }
   return { nextKey, events };
 }
 

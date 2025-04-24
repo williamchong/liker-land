@@ -93,6 +93,10 @@ export const LIKECOIN_NFT_API_WALLET = IS_TESTNET
   ? 'like1yney2cqn5qdrlc50yr5l53898ufdhxafqz9gxp'
   : 'like17m4vwrnhjmd20uu7tst7nv0kap6ee7js69jfrs';
 
+export const LIKECOIN_EVM_NFT_API_WALLET = IS_TESTNET
+  ? '0xaaAC16B7c910f9e5236DC12eF8Db72Abc90D62c4'
+  : '0xFD8173a1DE213356e537BB7b7b5080D30f7Fba3B';
+
 export const LIKECOIN_NFT_CLASS_FREE_MINT = IS_TESTNET
   ? 'likenft1t2a7n9px9y5mhayjpk4s7m40zwjr3wvyg4ucg32w77jxmsw7889qg6ky8d'
   : 'likenft14jz77ywl6hmfxlus6qrat36c2y7l5xkxhlzp76tdvk06mw69pjzsy5zu9l';
