@@ -721,6 +721,22 @@ const actions = {
     return info;
   },
   async fetchNFTOwners({ commit }, { classId, nocache = false }) {
+    if (isEVMClassId(classId)) {
+      // TODO: use better owner API after indexer update, list all tokens via page
+      const { data } = await this.$api.$get(
+        evmApi.getNFTClassTokenList(classId)
+      );
+      const ownersInfo = {};
+      data.forEach(item => {
+        const { owner_address: owner, token_id: tokenId } = item;
+        if (!ownersInfo[owner]) {
+          ownersInfo[owner] = [];
+        }
+        ownersInfo[owner].push(tokenId);
+      });
+      commit(TYPES.NFT_SET_NFT_CLASS_OWNER_INFO, { classId, info: ownersInfo });
+      return ownersInfo;
+    }
     const { owners } = await this.$api.$get(
       cosmosApi.getNFTOwners(classId, nocache)
     );

@@ -9,6 +9,9 @@ export const getChainNFTClassMetadataEndpoint = classId =>
 export const getChainNFTMetadataEndpoint = (classId, nftId) =>
   `${LIKE_NFT_EVM_INDEXER_API}/token/${classId}/${nftId}`;
 
+export const getNFTClassTokenList = (classId, limit = 100) =>
+  `${LIKE_NFT_EVM_INDEXER_API}/booknft/${classId}/tokens?limit=${limit}`;
+
 export const getWalletOwnedClass = ({ wallet, key, reverse, limit = 100 }) => {
   const payload = {};
   if (key) payload['pagination.key'] = key;
