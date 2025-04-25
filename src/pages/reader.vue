@@ -141,7 +141,7 @@ export default {
         return;
       }
       await Promise.all([
-        this.lazyFetchNFTBookInfoByClassId(this.classId).catch(),
+        this.lazyFetchNFTBookInfoByClassId(this.classId).catch(() => {}),
         this.lazyFetchNFTClassMetadata(),
         this.restoreAuthSession(),
       ]);
@@ -165,11 +165,7 @@ export default {
           );
           return;
         }
-        if (
-          (this.isLoginRequired || this.nftIsCustomMessageEnabled) &&
-          this.nftId &&
-          !this.$route.query.nftId
-        ) {
+        if (this.nftId && !this.$route.query.nftId) {
           this.$router.replace({
             query: { ...this.$route.query, nftId: this.nftId },
           });
