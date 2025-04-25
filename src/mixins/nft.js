@@ -46,6 +46,7 @@ import nftEventBannerMixin from '~/mixins/nft-event-banner';
 import nftPageOverrideMixin from '~/mixins/nft-page-override';
 import { createUserInfoMixin } from '~/mixins/user-info';
 import { createNFTClassCollectionMixin } from '~/mixins/nft-class-collection';
+import { isEVMClassId, getNFTClassBalanceOf } from '~/util/evm/nft';
 
 const creatorInfoMixin = createUserInfoMixin({
   propKey: 'Creator',
@@ -888,9 +889,14 @@ export default {
       /* HACK: Use restful API instead of cosmjs to avoid loading libsodium,
         which is huge and affects index page performance */
       // const { amount } = await getNFTCountByClassId(classId, address);
-      const { amount } = await this.$api.$get(
-        getNFTCountByClassId(classId, address)
-      );
+      let amount = 0;
+      if (isEVMClassId(classId)) {
+        amount = await getNFTClassBalanceOf(classId, address);
+      } else {
+        ({ amount } = await this.$api.$get(
+          getNFTCountByClassId(classId, address)
+        ));
+      }
       this.userCollectedCount = Number(amount);
       this.isOwnerInfoLoading = false;
     },
