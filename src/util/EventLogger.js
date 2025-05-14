@@ -235,6 +235,7 @@ export function logPurchaseFlowEvent(
             currency,
             price: i.price,
             quantity: i.quantity || 1,
+            google_business_vertical: 'retail',
           };
         }),
         ...otherPayload,
