@@ -198,7 +198,7 @@ import {
   parseNFTMetadataURL,
   NFT_TYPE_FILTER_OPTIONS,
 } from '~/util/nft';
-import { EXTERNAL_HOST } from '~/constant';
+import { EXTERNAL_HOST, BOOK3_HOSTNAME } from '~/constant';
 
 import walletMixin from '~/mixins/wallet';
 import portfolioMixin, { tabOptions } from '~/mixins/portfolio';
@@ -228,18 +228,27 @@ export default {
         }
         return;
       }
+      if (id.startsWith('0x')) {
+        redirect(301, `https://${BOOK3_HOSTNAME}/${id}`);
+        return;
+      }
       if (id.startsWith('cosmos1')) {
         id = convertAddressPrefix(id, 'like');
       }
     } else if (id && checkUserNameValid(id)) {
       try {
         const userInfo = await $api.$get(getUserMinAPI(id));
-        redirect(301, {
-          ...route,
-          params: { id: userInfo.likeWallet },
-          query,
-          hash,
-        });
+        const { likeWallet, evmWallet } = userInfo;
+        if (evmWallet) {
+          redirect(301, `https://${BOOK3_HOSTNAME}/${evmWallet}`);
+        } else {
+          redirect(301, {
+            ...route,
+            params: { id: likeWallet },
+            query,
+            hash,
+          });
+        }
         return;
       } catch (err) {
         const msg = (err.response && err.response.data) || err;
