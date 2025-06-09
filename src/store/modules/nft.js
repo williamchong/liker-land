@@ -105,26 +105,9 @@ const mutations = {
   },
   [TYPES.NFT_BOOK_STORE_INFO_BY_CLASS_ID_MAP_SET](
     state,
-    {
-      classId,
-      prices,
-      mustClaimToView,
-      hideDownload,
-      enableCustomMessagePage,
-      enableSignatureImage,
-      tableOfContents,
-      recommendedClassIds,
-    }
+    { classId, ...payload }
   ) {
-    Vue.set(state.nftBookStoreInfoByClassIdMap, classId, {
-      prices,
-      mustClaimToView,
-      hideDownload,
-      enableCustomMessagePage,
-      enableSignatureImage,
-      tableOfContents,
-      recommendedClassIds,
-    });
+    Vue.set(state.nftBookStoreInfoByClassIdMap, classId, payload);
   },
   [TYPES.NFT_SET_NFT_COLLECTION_INFO](state, { collectionId, data }) {
     const { typePayload, ...otherData } = data;
@@ -529,6 +512,7 @@ const actions = {
         classId,
         prices: bookstoreInfo.prices,
         mustClaimToView: bookstoreInfo.mustClaimToView,
+        evmClassId: bookstoreInfo.evmClassId,
         hideDownload: bookstoreInfo.hideDownload,
         enableCustomMessagePage: bookstoreInfo.enableCustomMessagePage,
         signedMessageText: bookstoreInfo.signedMessageText,
@@ -894,6 +878,7 @@ const actions = {
       classId,
       prices: data.prices,
       mustClaimToView: data.mustClaimToView,
+      evmClassId: data.evmClassId,
       hideDownload: data.hideDownload,
       enableCustomMessagePage: data.enableCustomMessagePage,
       signedMessageText: data.signedMessageText,
