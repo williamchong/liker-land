@@ -656,10 +656,10 @@ export default {
         });
       }
     }
-    const priceInfo = store.getters.getNFTBookStorePricesByClassId(classId);
-    if (priceInfo?.evmClassId) {
+    const storeInfo = store.getters.getNFTBookStoreInfoByClassId(classId);
+    if (storeInfo?.evmClassId) {
       // redirect to evm class page if exists
-      redirect(301, `https://${BOOK3_HOSTNAME}/store/${priceInfo.evmClassId}`);
+      redirect(301, `https://${BOOK3_HOSTNAME}/store/${storeInfo.evmClassId}`);
     }
   },
   head() {
