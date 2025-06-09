@@ -549,6 +549,7 @@ import {
   NFT_BOOK_PLATFORM_LIKER_LAND,
   LIKECOIN_API_BASE,
   LIKECOIN_BUTTON_BASE,
+  BOOK3_HOSTNAME,
 } from '@/constant/index';
 import { nftClassCollectionType, parseNFTMetadataURL } from '~/util/nft';
 import { getNFTBookPurchaseLink, postNewStripeFiatPayment } from '~/util/api';
@@ -615,6 +616,10 @@ export default {
       return;
     }
     // check classId contains only valid characters
+    if (classId.startsWith('0x')) {
+      redirect(301, `https://${BOOK3_HOSTNAME}/store/${classId}`);
+      return;
+    }
     if (!/^likenft1[ac-hj-np-z02-9]{58}$/.test(classId)) {
       error({
         statusCode: 400,
@@ -650,6 +655,11 @@ export default {
           message: 'NFT_FETCH_ERROR',
         });
       }
+    }
+    const priceInfo = store.getters.getNFTBookStorePricesByClassId(classId);
+    if (priceInfo?.evmClassId) {
+      // redirect to evm class page if exists
+      redirect(301, `https://${BOOK3_HOSTNAME}/store/${priceInfo.evmClassId}`);
     }
   },
   head() {
