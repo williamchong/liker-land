@@ -538,6 +538,10 @@
       :items="populatedBuyerWithMessage"
       @close="isOpeningCollectorListDialog = false"
     />
+    <MigrateNoticeModalPurchase
+      :is-open="isMigrateNoticeModalOpen"
+      @close="handleCloseMigrateNoticeModal"
+    />
   </Page>
 </template>
 
@@ -600,6 +604,8 @@ export default {
       isHistoryInfoLoading: false,
       hasHistoryInfoLoaded: false,
       isOpeningCollectorListDialog: false,
+
+      isMigrateNoticeModalOpen: false,
     };
   },
   async fetch({ route, store, redirect, error, localeLocation }) {
@@ -1014,6 +1020,7 @@ export default {
       'getGaClientId',
       'getGaSessionId',
       'getShoppingCartBookProductQuantity',
+      'getNFTBookStoreInfoByClassId',
     ]),
     classId() {
       return this.$route.params.classId;
@@ -1212,6 +1219,13 @@ export default {
         'laptop:block',
       ];
     },
+    nftEvmURL() {
+      const storeInfo = this.getNFTBookStoreInfoByClassId(this.classId);
+      if (storeInfo?.evmClassId) {
+        return `https://${BOOK3_HOSTNAME}/store/${storeInfo.evmClassId}`;
+      }
+      return undefined;
+    },
   },
   async mounted() {
     try {
@@ -1367,6 +1381,11 @@ export default {
         1
       );
 
+      if (!this.nftEvmURL) {
+        this.isMigrateNoticeModalOpen = true;
+        return;
+      }
+
       if (this.nftIsNFTBook) {
         this.checkTippingAvailability(this.selectedValue);
         return;
@@ -1504,6 +1523,10 @@ export default {
       return this.getEditionByIndex(index);
     },
     checkTippingAvailability(selectedValue) {
+      if (!this.nftEvmURL) {
+        this.isMigrateNoticeModalOpen = true;
+        return;
+      }
       this.selectedValue = selectedValue;
       const edition = this.getEdition(selectedValue);
       const hasStock = Boolean(edition?.stock);
@@ -2016,6 +2039,16 @@ export default {
         this,
         'NFT',
         'nft_class_details_book_info_expand',
+        this.classId,
+        1
+      );
+    },
+    handleCloseMigrateNoticeModal() {
+      this.isMigrateNoticeModalOpen = false;
+      logTrackerEvent(
+        this,
+        'NFT',
+        'nft_class_details_migrate_notice_close',
         this.classId,
         1
       );

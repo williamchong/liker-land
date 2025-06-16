@@ -559,6 +559,12 @@
       </NFTClaimMainSection>
     </div>
 
+    <MigrateNoticeModalClaim
+      :is-open="isMigrateModalOpen"
+      :payment-id="paymentId"
+      @close="handleCloseMigrateModal"
+    />
+
     <NFTBookCrossSellDialog
       :open="isCrossSellDialogOpen"
       :class-id="crossSellClassId"
@@ -594,7 +600,7 @@ import {
   parseAutoMemo,
 } from '~/util/nft';
 import { ellipsis } from '~/util/ui';
-import { NFT_BOOK_PLATFORM_LIKER_LAND } from '~/constant';
+import { NFT_BOOK_PLATFORM_LIKER_LAND, IS_CLAIM_DISABLED } from '~/constant';
 import alertMixin from '~/mixins/alert';
 import crossSellMixin from '~/mixins/cross-sell';
 import walletMixin from '~/mixins/wallet';
@@ -647,6 +653,8 @@ export default {
       collectionId: this.$route.query.collection_id,
       cartItems: [],
       isViewCollectionLoading: false,
+
+      isMigrateModalOpen: false,
     };
   },
   computed: {
@@ -851,6 +859,7 @@ export default {
       });
       return;
     }
+    this.isMigrateModalOpen = true;
     let price;
     let { priceIndex } = this;
     if (this.cartId) {
@@ -1175,8 +1184,9 @@ export default {
       }
     },
     async claim() {
-      if (this.shouldBlockClaim) {
+      if (this.shouldBlockClaim || IS_CLAIM_DISABLED) {
         this.navigateToState(NFT_CLAIM_STATE.ERROR);
+        this.isMigrateModalOpen = true;
         return;
       }
       logTrackerEvent(this, 'NFT', 'nft_claim_claim_button_clicked', '', 1);
@@ -1567,6 +1577,16 @@ export default {
         this,
         'NFT',
         'nft_claim_cross_sell_reject',
+        this.productId,
+        1
+      );
+    },
+    handleCloseMigrateModal() {
+      this.isMigrateModalOpen = false;
+      logTrackerEvent(
+        this,
+        'NFT',
+        'nft_claim_migrate_notice_modal_closed',
         this.productId,
         1
       );
