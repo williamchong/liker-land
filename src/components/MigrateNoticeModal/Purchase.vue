@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { BOOK_COM_DOMAIN } from '~/constant';
+import { getBookComURLWithUTM } from '~/util/links';
 
 export default {
   name: 'MigrateNoticeModalPurchase',
@@ -42,7 +42,8 @@ export default {
 
   methods: {
     handleClickOpen3ook() {
-      window.open(BOOK_COM_DOMAIN, '_blank', 'noopener,noreferrer');
+      const url = getBookComURLWithUTM({ campaign: 'purchase_migration' });
+      window.open(url, '_blank', 'noopener,noreferrer');
     },
     handleDismiss() {
       this.$emit('close');
