@@ -123,6 +123,7 @@ import {
   IS_TESTNET,
   EXTERNAL_HOST,
   NFT_BOOK_PLATFORM_LIKER_LAND,
+  BOOK3_HOSTNAME,
 } from '~/constant';
 import { parseNFTMetadataURL } from '~/util/nft';
 
@@ -154,12 +155,21 @@ export default {
       isAddingToCart: false,
     };
   },
-  async fetch({ route, store, error }) {
+  async fetch({ route, store, redirect, error }) {
     const { collectionId } = route.params;
     try {
       await store.dispatch('lazyFetchNFTCollectionInfoByCollectionId', {
         collectionId,
       });
+
+      const collectionInfo = store.getters.getNFTCollectionInfoByCollectionId(
+        collectionId
+      );
+      const evmClassId = collectionInfo.classIds.find(classId => classId.startsWith('0x'));
+      if (evmClassId) {
+        redirect(302, `https://${BOOK3_HOSTNAME}/store/${evmClassId}`);
+        return;
+      }
     } catch (err) {
       if (err.response?.status === 404) {
         error({
