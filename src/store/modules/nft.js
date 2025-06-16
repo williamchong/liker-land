@@ -905,7 +905,14 @@ const actions = {
     await Promise.all(
       []
         .concat(
-          classIds.map(classId => dispatch('lazyGetNFTClassMetadata', classId))
+          classIds.map(classId =>
+            dispatch('lazyGetNFTClassMetadata', classId).catch(error => {
+              if (error.response?.status !== 404) {
+                // eslint-disable-next-line no-console
+                console.error(error);
+              }
+            })
+          )
         )
         .concat(
           classIds.map(classId =>
