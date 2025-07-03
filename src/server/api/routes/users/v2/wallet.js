@@ -46,11 +46,13 @@ router.get('/wallet', async (req, res, next) => {
       lastLoginMethod,
       registerLoginMethod,
       displayName,
+      evmWallet,
       email: docEmail,
       emailUnconfirmed,
     } = userDoc.data();
     res.json({
       wallet: userWallet,
+      evmWallet,
       lastLoginMethod,
       registerLoginMethod,
       displayName,
