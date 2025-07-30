@@ -14,7 +14,6 @@ const { handleRestfulError } = require('../../../middleware/error');
 const { sendEmail } = require('../../../../modules/sendgrid');
 const { publisher, PUBSUB_TOPIC_MISC } = require('../../../../modules/pubsub');
 const { isValidFollowee } = require('../../../util/cosmos');
-const { upsertCrispProfile } = require('../../../util/crisp');
 
 const {
   VERIFICATION_EMAIL_RESEND_COOLDOWN_IN_MS,
@@ -108,20 +107,6 @@ router.post('/email', authenticateV2Login, async (req, res, next) => {
       paymentId,
     });
 
-    if (isVerified) {
-      try {
-        const { displayName, lastLoginMethod: loginMethod } = userInfo;
-        await upsertCrispProfile(email, {
-          displayName,
-          wallet: user,
-          loginMethod,
-        });
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      }
-    }
-
     const qsPayload = { wallet: user };
     if (isValidFollowee(user, followee)) {
       qsPayload.followee = followee;
@@ -210,17 +195,6 @@ router.put('/email', async (req, res, next) => {
       user,
       followee,
     });
-
-    try {
-      await upsertCrispProfile(email, {
-        displayName,
-        wallet: user,
-        loginMethod,
-      });
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-    }
 
     res.json({ email });
   } catch (error) {

@@ -15,7 +15,6 @@ const {
   isValidAddress,
   checkCosmosSignPayload,
 } = require('../../../util/cosmos');
-const { getCrispUserHash, upsertCrispProfile } = require('../../../util/crisp');
 
 const CLEAR_AUTH_COOKIE_OPTION = { ...AUTH_COOKIE_OPTION, maxAge: 0 };
 
@@ -34,18 +33,6 @@ router.get('/self', authenticateV2Login, async (req, res, next) => {
       locale = DEFAULT_LOCALE,
       cart,
     } = userDoc.data();
-    if (email) {
-      try {
-        await upsertCrispProfile(email, {
-          displayName,
-          wallet: user,
-          loginMethod,
-        });
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      }
-    }
     res.json({
       user,
       displayName,
@@ -53,7 +40,6 @@ router.get('/self', authenticateV2Login, async (req, res, next) => {
       emailUnconfirmed,
       eventLastSeenTs: eventLastSeenTs ? eventLastSeenTs.toMillis() : 1000,
       locale,
-      crispToken: email ? getCrispUserHash(email) : undefined,
       cart,
     });
   } catch (err) {
@@ -144,23 +130,10 @@ router.post('/login', async (req, res, next) => {
         user: userId,
       });
     }
-    if (email) {
-      try {
-        await upsertCrispProfile(email, {
-          displayName,
-          wallet: userId,
-          loginMethod,
-        });
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(error);
-      }
-    }
     const payload = {
       user: userId,
       displayName,
       isNew,
-      crispToken: email ? getCrispUserHash(email) : undefined,
       cart,
     };
     res.json(payload);
