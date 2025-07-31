@@ -849,12 +849,11 @@ const actions = {
     if (!checkIsLikeCoinAppInAppBrowser(this.$router.app.$route)) {
       await dispatch('setLocale', userInfo.locale);
     }
-    const { displayName, email, crispToken, cart } = userInfo;
+    const { displayName, email, cart } = userInfo;
     updateLoggerUserInfo(this, {
       email,
       displayName,
       wallet: state.address,
-      crispToken,
     });
     if (cart?.length) {
       dispatch('addBookProductsToShoppingCart', cart);
@@ -904,7 +903,6 @@ const actions = {
         wallet: address,
         method: methodType,
         email: result.email,
-        crispToken: result.crispToken,
         event: result.isNew ? 'signup' : 'login',
       });
       await dispatch('walletFetchSessionUserData');

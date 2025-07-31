@@ -83,10 +83,7 @@ export async function setLoggerUser(
   }
 }
 
-export function updateLoggerUserInfo(
-  vue,
-  { wallet, displayName, email, crispToken }
-) {
+export function updateLoggerUserInfo(vue, { wallet, displayName, email }) {
   if (vue.$sentry) {
     const opt = {
       id: wallet,

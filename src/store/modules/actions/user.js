@@ -34,9 +34,6 @@ export async function fetchLoginStatus({ commit, dispatch }) {
 export async function userLogout({ commit }) {
   await this.$api.$post(api.getLogoutAPI());
   commit(types.USER_SET_USER_INFO, {});
-  if (this.$crisp) {
-    this.$crisp.push(['do', 'session:reset']);
-  }
 }
 
 export function setUserCivicLiker({ commit }, { civicLikerVersion = 1 } = {}) {

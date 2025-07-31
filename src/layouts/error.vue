@@ -56,10 +56,10 @@
 <script>
 import pageNotFound from '~/assets/images/error/404.svg';
 import severError from '~/assets/images/error/500.svg';
-import crispMixin from '~/mixins/crisp';
+import intercomMixin from '~/mixins/intercom';
 
 export default {
-  mixins: [crispMixin],
+  mixins: [intercomMixin],
   layout: 'empty',
   props: {
     error: {
@@ -93,9 +93,9 @@ export default {
   },
   methods: {
     handleClickReport() {
-      if (this.$crisp) {
-        this.showCrisp();
-        this.$crisp.push(['do', 'chat:open']);
+      if (this.$intercom) {
+        this.showIntercom();
+        this.$intercom.showMessages();
       } else {
         window.open(
           'https://discord.com/channels/763001015712350231/814761730349596712'

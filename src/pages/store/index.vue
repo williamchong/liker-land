@@ -1216,7 +1216,7 @@ export default {
       this.dialogNFTClassList = [];
     },
     handleClickCantFindBook() {
-      this.openCrisp(this.$t('listing_page_cant_find_books_prefilled_message'));
+      this.openIntercom();
       logTrackerEvent(
         this,
         'listing',

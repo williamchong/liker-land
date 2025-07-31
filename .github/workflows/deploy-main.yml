@@ -35,7 +35,7 @@ jobs:
           GRE_API_KEY: ${{ vars.GRE_API_KEY }}
           GRE_PROJECT_ID: ${{ vars.GRE_PROJECT_ID }}
           STRIPE_PUBLIC_KEY: ${{ vars.STRIPE_PUBLIC_KEY }}
-          CRISP_WEBSITE_ID: ${{ vars.CRISP_WEBSITE_ID }}
+          INTERCOM_APP_ID: ${{ vars.INTERCOM_APP_ID }}
           SENTRY_DSN: ${{ vars.SENTRY_DSN }}
           SENTRY_ORG: ${{ vars.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
