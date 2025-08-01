@@ -1632,7 +1632,6 @@ export default {
     return {
       isDesktop: true,
       hasFinishedHeroSectionScrollAnimation: false,
-      crispWebsiteId: '',
     };
   },
   head() {
@@ -1673,12 +1672,7 @@ export default {
       return this.nftClassIdListInTrending.slice(0, 5);
     },
     publishStoryURL() {
-      if (this.crispWebsiteId) {
-        return `https://go.crisp.chat/chat/embed/?website_id=${
-          this.crispWebsiteId
-        }`;
-      }
-      return '';
+      return 'mailto:cs@3ook.com';
     },
     heroSectionStyle() {
       return {
@@ -1904,8 +1898,6 @@ export default {
     },
   },
   mounted() {
-    // populate crisp on mount to avoid ssr issues
-    if (window.CRISP_WEBSITE_ID) this.crispWebsiteId = window.CRISP_WEBSITE_ID;
     this.$options.resizeListener = window.addEventListener(
       'resize',
       this.handleResize
@@ -2601,8 +2593,8 @@ export default {
       );
     },
     handlePublishStoryButtonClick(e) {
-      if (this.$crisp) {
-        const res = this.openCrisp(this.$t('inquiry_form_prefilled_message'));
+      if (this.$intercom) {
+        const res = this.openIntercom();
         if (res) e.preventDefault();
       }
     },

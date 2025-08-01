@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const { userCollection } = require('../../modules/firebase');
 const { setPrivateCacheHeader } = require('../middleware/cache');
 const axios = require('../../modules/axios');
-const { getCrispUserHash } = require('../util/crisp');
 const {
   apiFetchUserProfile,
   apiFetchUserSuperLikeStatus,
@@ -51,7 +50,6 @@ router.get('/users/self', async (req, res, next) => {
         hasReadWelcomeDialog,
         isSuperLiker,
         ...data,
-        crispToken: getCrispUserHash(user),
       });
       await userCollection.doc(user).update({
         user: data,
@@ -79,7 +77,6 @@ router.get('/users/self/min', (req, res, next) => {
       }
       res.json({
         user,
-        crispToken: getCrispUserHash(user),
       });
       return;
     }
@@ -205,7 +202,6 @@ router.post('/users/login', async (req, res, next) => {
       user,
       ...userData,
       isSuperLiker,
-      crispToken: getCrispUserHash(user),
       isNew,
     });
   } catch (err) {

@@ -15,14 +15,14 @@
         />
         <Label class="text-medium-gray mt-[12px]" :text="cardText" />
         <NuxtLink
-          v-if="shouldShowCrisp"
+          v-if="shouldShowIntercom"
           class="mt-[12px] text-like-green font-600"
           :to="localeLocation({ name: 'bookstore' })"
         >
           {{ $t('portfolio_collected_tab_get_more_item') }}
         </NuxtLink>
         <i18n
-          v-if="shouldShowCrisp"
+          v-if="shouldShowIntercom"
           class="flex items-center text-medium-gray text-[14px] mt-[24px]"
           path="nft_claim_claimed_empty_collected_help"
         >
@@ -40,12 +40,12 @@
 </template>
 
 <script>
-import crispMixin from '~/mixins/crisp';
+import intercomMixin from '~/mixins/intercom';
 import { logTrackerEvent } from '~/util/EventLogger';
 
 export default {
   name: 'NFTPortfolioEmpty',
-  mixins: [crispMixin],
+  mixins: [intercomMixin],
   props: {
     // The preset of empty card, option: collected and created
     preset: {
@@ -53,40 +53,25 @@ export default {
       default: 'collected',
     },
   },
-  data() {
-    return {
-      crispWebsiteId: '',
-    };
-  },
   computed: {
     cardText() {
       return this.preset === 'collected'
         ? this.$t('portfolio_collected_tab_no_item')
         : this.$t('portfolio_created_tab_no_item');
     },
-    shouldShowCrisp() {
+    shouldShowIntercom() {
       return (
         this.$route.name.includes('bookshelf') && this.preset === 'collected'
       );
     },
   },
-  mounted() {
-    // populate crisp on mount to avoid ssr issues
-    if (window.CRISP_WEBSITE_ID) this.crispWebsiteId = window.CRISP_WEBSITE_ID;
-  },
   methods: {
     handleClickHelp() {
-      logTrackerEvent(this, 'bookshelf', 'bookshelf_crisp_click', '', 1);
-      const res = this.openCrisp(
-        this.$t('nft_claim_claimed_empty_crisp_prefilled_message')
-      );
+      logTrackerEvent(this, 'bookshelf', 'bookshelf_intercom_click', '', 1);
+      const res = this.openIntercom();
       if (!res) {
-        if (this.crispWebsiteId) {
-          window.open(
-            `https://go.crisp.chat/chat/embed/?website_id=${
-              this.crispWebsiteId
-            }`
-          );
+        if (process.env.INTERCOM_APP_ID) {
+          window.open('mailto:cs@3ook.com');
         } else {
           window.open(
             'https://discord.com/channels/763001015712350231/814761730349596712'

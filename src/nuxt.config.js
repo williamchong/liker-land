@@ -8,7 +8,7 @@ const SITE_NAME = 'Liker Land Bookstore';
 const {
   IS_TESTNET,
   CI,
-  CRISP_WEBSITE_ID,
+  INTERCOM_APP_ID,
   STRIPE_PUBLIC_KEY,
   GA_TRACKING_ID,
   AD_CONVERSION_ID,
@@ -22,7 +22,7 @@ const nuxtConfig = {
   env: {
     IS_TESTNET,
     CI,
-    CRISP_WEBSITE_ID,
+    INTERCOM_APP_ID,
     STRIPE_PUBLIC_KEY,
     GA_TRACKING_ID,
     AD_CONVERSION_ID,
@@ -275,9 +275,11 @@ const nuxtConfig = {
           'static.cloudflareinsights.com',
           'cdnjs.cloudflare.com',
 
+          'https://widget.intercom.io',
+          'https://js.intercomcdn.com',
+
           'https://unpkg.com/@google/model-viewer@3.1.1/',
           'https://substackapi.com',
-          '*.crisp.chat',
           'connect.facebook.net',
           '*.elfsight.com',
           'https://assets.mailerlite.com',
@@ -317,14 +319,11 @@ const nuxtConfig = {
           'https://checkout.stripe.com',
           'https://api.stripe.com',
           'https://maps.googleapis.com',
-
-          'wss://client.relay.crisp.chat',
         ],
         'style-src': [
           "'self'",
           'blob:',
           "'unsafe-inline'",
-          'client.crisp.chat',
           'fonts.googleapis.com',
           'https://assets.mailerlite.com',
         ],
@@ -359,7 +358,7 @@ const nuxtConfig = {
     { src: '~/plugins/gtag.client.js', mode: 'client' },
     { src: '~/plugins/ui-plugin.client.js', ssr: false },
     { src: '~/plugins/vue-cookie.client.js', ssr: false },
-    { src: '~/plugins/crisp.client.js', ssr: false },
+    { src: '~/plugins/intercom.client.js', ssr: false },
     { src: '~/plugins/vue-clipboard2', ssr: false },
     { src: '~/plugins/nuxt-client-init.client', ssr: false },
     '~/plugins/3ook.js',

@@ -42,36 +42,11 @@ export default {
     },
   },
 
-  data() {
-    return {
-      crispWebsiteId: '',
-    };
-  },
-
-  mounted() {
-    // populate crisp on mount to avoid ssr issues
-    if (window.CRISP_WEBSITE_ID) this.crispWebsiteId = window.CRISP_WEBSITE_ID;
-  },
-
   methods: {
     handleClickGetSupport() {
-      const res = this.openCrisp(
-        this.$t('migration_dialog_claim_help_text', {
-          paymentId: this.paymentId,
-        })
-      );
+      const res = this.openIntercom();
       if (!res) {
-        if (this.crispWebsiteId) {
-          window.open(
-            `https://go.crisp.chat/chat/embed/?website_id=${
-              this.crispWebsiteId
-            }`
-          );
-        } else {
-          window.open(
-            'https://discord.com/channels/763001015712350231/814761730349596712'
-          );
-        }
+        window.open('mailto:cs@3ook.com');
       }
     },
     handleDismiss() {

@@ -138,17 +138,15 @@
 import Logo from '~/assets/icons/logo.svg?inline';
 import { logTrackerEvent } from '~/util/EventLogger';
 
-import crispMixin from '~/mixins/crisp';
+import intercomMixin from '~/mixins/intercom';
 import { BOOK_PRESS_BASE } from '~/constant';
-
-import Dialog from './Dialog';
 
 export default {
   name: 'Footer',
   components: {
     Logo,
   },
-  mixins: [crispMixin],
+  mixins: [intercomMixin],
   computed: {
     mintNftURL() {
       return BOOK_PRESS_BASE;
@@ -171,19 +169,11 @@ export default {
   methods: {
     handleClickHelp() {
       logTrackerEvent(this, 'footer', 'footer_click_help', '', 1);
-      if (this.$crisp) {
-        this.showCrisp();
-        this.$crisp.push(['do', 'chat:open']);
-      } else if (window.CRISP_WEBSITE_ID) {
-        window.open(
-          `https://go.crisp.chat/chat/embed/?website_id=${
-            window.CRISP_WEBSITE_ID
-          }`
-        );
+      if (this.$intercom) {
+        this.showIntercom();
+        this.$intercom.showMessages();
       } else {
-        window.open(
-          'https://discord.com/channels/763001015712350231/814761730349596712'
-        );
+        window.open('mailto:cs@3ook.com');
       }
     },
     handleClickButton(buttonName) {
