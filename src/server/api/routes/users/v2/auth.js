@@ -110,8 +110,8 @@ router.post('/login', async (req, res, next) => {
       }
       return { ...userDocData, isNew };
     });
-    const { isNew, email, displayName } = result;
-    if (result.isNew) {
+    const { isNew, displayName } = result;
+    if (isNew) {
       publisher.publish(PUBSUB_TOPIC_MISC, req, {
         logType: 'UserSignUp',
         signMethod,
