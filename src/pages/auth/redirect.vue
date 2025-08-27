@@ -34,10 +34,18 @@ export default {
 
     if (method && code) {
       try {
-        const { isNew, user, idToken } = await this.handleConnectorRedirect({
+        const res = await this.handleConnectorRedirect({
           method,
           params: { code },
         });
+        if (!res) {
+          this.$nuxt.error({
+            statusCode: 400,
+            message: 'Failed to retrieve user information',
+          });
+          return;
+        }
+        const { isNew, user, idToken } = res;
         if (
           user?.primary_email &&
           !this.walletEmail &&

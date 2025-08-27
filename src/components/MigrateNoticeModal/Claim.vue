@@ -30,8 +30,11 @@
 </template>
 
 <script>
+import intercomMixin from '~/mixins/intercom';
+
 export default {
   name: 'MigrateNoticeModalClaim',
+  mixins: [intercomMixin],
   props: {
     isOpen: {
       type: Boolean,
