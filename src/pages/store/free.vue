@@ -1,14 +1,11 @@
 <script>
-import { PRICE_OPTIONS } from '~/constant/store';
+import { BOOK3_HOSTNAME } from '~/constant';
 
 export default {
-  fetch({ redirect, localeLocation, query }) {
-    redirect(
-      localeLocation({
-        name: 'store',
-        query: { ...query, price: PRICE_OPTIONS.FREE },
-      })
-    );
+  fetch({ redirect, query }) {
+    const search = new URLSearchParams(query);
+    search.set('tag', 'free');
+    redirect(301, `https://${BOOK3_HOSTNAME}/store?${search.toString()}`);
   },
 };
 </script>
