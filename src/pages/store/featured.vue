@@ -1,11 +1,11 @@
 <script>
+import { BOOK3_HOSTNAME } from '~/constant';
+
 export default {
-  fetch({ redirect, localeLocation, query }) {
+  fetch({ redirect, query }) {
     redirect(
-      localeLocation({
-        name: 'store',
-        query,
-      })
+      301,
+      `https://${BOOK3_HOSTNAME}/store?${new URLSearchParams(query).toString()}`
     );
   },
 };
